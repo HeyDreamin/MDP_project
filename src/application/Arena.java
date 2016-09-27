@@ -1,5 +1,6 @@
 package application;
 
+import java.io.*;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -58,6 +59,26 @@ public class Arena extends AnchorPane implements EventHandler<Event> {
 		this.changeCoordinate = changeCoordinate;
 		
 		robot.setVisible(!changeCoordinate);
+	}
+	
+	public String mapFilePath = "maps/map.txt";
+	public void readMapFromFile() throws IOException {
+		File file = new File(mapFilePath);
+		Reader reader = null;
+		try {
+			int tempChar;
+			reader = new InputStreamReader(new FileInputStream(file));
+		    for (int row = 0; row < 20; row++) {
+		    	for (int col = 0; col < 15; col++) {
+		    		if ((tempChar = reader.read())==1)
+		    			grids[row][col].setFreeSpace(false);
+		    		if ((tempChar = reader.read())==0)
+		    			grids[row][col].setFreeSpace(true);		    			
+		    	}		    	
+		    }
+		} catch (FileNotFoundException e) {
+			e.printStackTrace();
+		}		
 	}
 	
 	public void loadMap(String mdf) {

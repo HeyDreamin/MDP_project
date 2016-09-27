@@ -2,6 +2,7 @@ package application;
 	
 import java.awt.Paint;
 import java.io.File;
+import java.io.IOException;
 
 import javafx.application.Application;
 import javafx.event.Event;
@@ -108,8 +109,19 @@ public class Main extends Application implements EventHandler<Event> {
 					filechooser.setInitialDirectory(mapDir);
 					file = filechooser.showOpenDialog(stage);
 					
+					/*file = new File(arena.mapFilePath);
 					if (file != null) {
-						
+						try {
+							arena.readMapFromFile();
+						} catch (IOException e) {
+							e.printStackTrace();
+						}
+					}*/
+					try {
+						arena.readMapFromFile();
+						System.out.println("sada");
+					} catch (IOException e) {
+						e.printStackTrace();
 					}
 					
 					break;
