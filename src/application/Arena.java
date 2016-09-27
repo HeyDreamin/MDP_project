@@ -11,7 +11,7 @@ import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.GridPane;
 
 public class Arena extends AnchorPane implements EventHandler<Event> {
-	private Grid[][] grids = new Grid[20][15];
+	public Grid[][] grids = new Grid[20][15];
 	private int prev_row, prev_col;
 
 	private Robot robot;
@@ -22,7 +22,7 @@ public class Arena extends AnchorPane implements EventHandler<Event> {
 		super();
 
 		// initialize the robot icon
-		robot = new Robot();
+		robot = new Robot(1,1,0,grids);
 		
 		// 
 		changeCoordinate = false;
@@ -39,7 +39,7 @@ public class Arena extends AnchorPane implements EventHandler<Event> {
 			    grid.setOnMouseExited(this);
 			    grid.setOnMouseClicked(this);
 			    				    
-			    arena.add(grid, col, row);
+			    arena.add(grid, col, 19-row);
 			    grids[row][col] = grid;
 		    }
 	    }
@@ -56,26 +56,37 @@ public class Arena extends AnchorPane implements EventHandler<Event> {
 	}
 
 	public void setChangeCoordinate(boolean changeCoordinate) {
-		this.changeCoordinate = changeCoordinate;
-		
+		this.changeCoordinate = changeCoordinate;		
 		robot.setVisible(!changeCoordinate);
 	}
 	
-	public String mapFilePath = "maps/map.txt";
-	public void readMapFromFile() throws IOException {
-		File file = new File(mapFilePath);
+	public void readMapFromFile(File file) throws IOException {
+		//File file = new File(mapFilePath);
 		Reader reader = null;
 		try {
 			int tempChar;
 			reader = new InputStreamReader(new FileInputStream(file));
-		    for (int row = 0; row < 20; row++) {
-		    	for (int col = 0; col < 15; col++) {
-		    		if ((tempChar = reader.read())==1)
-		    			grids[row][col].setFreeSpace(false);
-		    		if ((tempChar = reader.read())==0)
-		    			grids[row][col].setFreeSpace(true);		    			
+			int row=0,col=0;
+		    while ((tempChar = reader.read())!=-1) {
+		    	if (col==15) {
+		    		System.out.println();
+		    		row++;
+		    		col = 0;
 		    	}		    	
+		    	if (tempChar==49) {
+	    	    	grids[row][col].setFreeSpace(false);	    	    
+	    		}
+		    	else if (tempChar==48) {
+	    			grids[row][col].setFreeSpace(true);
+	    		}		    	
+		    	if ((row<3)&&(col<3))
+		    		grids[row][col].setStart();
+		    	else if ((row>16)&&(col>11))
+		    		grids[row][col].setGoal();
+		    	System.out.printf("%2d",tempChar-48);
+	    		col++;
 		    }
+		    System.out.println();
 		} catch (FileNotFoundException e) {
 			e.printStackTrace();
 		}		
@@ -214,9 +225,9 @@ public class Arena extends AnchorPane implements EventHandler<Event> {
 		if (changeCoordinate) {
 			if (evt.equals("MOUSE_CLICKED")) {
 				if ((0 < row && row < 19) && (0 < col  && col < 14)) {
-					selectCoordinateUnhover(row, col);
+					//selectCoordinateUnhover(row, col);
 					
-					robot.updatePosition(col-1, row-1);
+					robot.updatePosition(col-1,19-row-1);
 					
 					setChangeCoordinate(false);
 				} else {
@@ -236,7 +247,6 @@ public class Arena extends AnchorPane implements EventHandler<Event> {
 					grid.setFreeSpace(true);
 				}
 			} 
-		}
-		
+		}		
 	}
 }

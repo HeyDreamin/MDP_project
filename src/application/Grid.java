@@ -12,6 +12,10 @@ public class Grid extends Label {
 	public static Background BG_FREESPACE = new Background(FILL_FREESPACE);
 	public static Background BG_WALL = new Background(FILL_WALL);
 	public static Background BG_HOVER = new Background(FILL_HOVER);
+	public static BackgroundFill FILL_START = new BackgroundFill(Color.RED, null, null);
+	public static Background BG_START = new Background(FILL_START);
+	public static BackgroundFill FILL_GOAL = new BackgroundFill(Color.GREEN, null, null);
+	public static Background BG_GOAL = new Background(FILL_GOAL);	
 
 	private Status status;
 	private boolean explored;
@@ -34,6 +38,14 @@ public class Grid extends Label {
 		return col;
 	}
 
+	public void setStart() {
+		setBackground(BG_START);
+	}
+	
+	public void setGoal() {
+		setBackground(BG_GOAL);
+	}
+	
 	public boolean isFreeSpace() {
 		return freeSpace;
 	}
