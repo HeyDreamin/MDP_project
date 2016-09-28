@@ -348,6 +348,7 @@ public class Robot extends BorderPane {
 				setX(x);
 				break;
 		}
+		
 	}
 	
 	public void turnLeft() {

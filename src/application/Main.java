@@ -90,19 +90,8 @@ public class Main extends Application implements EventHandler<Event> {
 	}
 	
 	public static void main(String[] args) {
-		arena = new Arena();
-		File file = new File("E:/coding/MDP_GUI/src/maps/map.txt");
-		try {
-			arena.readMapFromFile(file);
-		} catch (IOException e) {
-			e.printStackTrace();
-		}
-		Robot robot = new Robot(1, 1, 0, arena.grids);
-		explorer = new Explorer(1, 1, 0, result.grids, robot);
-		explorer.explore();
 		
-		//launch(args);
-		System.out.println("???");
+		launch(args);
 		return;
 	}
 	
@@ -143,10 +132,14 @@ public class Main extends Application implements EventHandler<Event> {
 					}
 					break;
 				case "btn_exploration":
-					Robot robot = new Robot(1, 1, 0, arena.grids);
-					explorer = new Explorer(1, 1, 0, result.grids, robot);
+//					Robot robot = new Robot(1, 1, 0, arena.grids);
+					explorer = new Explorer(1, 1, 0, result.grids, arena.getRobot());
 					explorer.explore();
 					System.out.println("123");
+					break;
+				case "btn_fastest_path":
+					arena.getRobot().moveForward(1, 0);
+					break;
 			}			
 		} 
 	}

@@ -69,11 +69,18 @@ public class Explorer {
 	
 	private void moveForwardRobot(int dis, int dir) {
 		//add robot control things here
+		try {
+			Thread.sleep(100);
+		} catch (InterruptedException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
 		robot.moveForward(dis, dir);
 		if (halfCheck()&&(!half))
 			half = true;
 		x = robot.getX();
 		y = robot.getY();
+
 		System.out.printf("x:%2d  |  y:%2d  |  dir:%3d\n", x, y, currentDir);
 		return;
 	}	

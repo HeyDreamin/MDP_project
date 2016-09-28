@@ -51,6 +51,10 @@ public class Arena extends AnchorPane implements EventHandler<Event> {
 	    getChildren().add(robot);
 	}
 	
+	public Robot getRobot() {
+		return robot;
+	}
+	
 	public boolean isChangeCoordinate() {
 		return changeCoordinate;
 	}
@@ -227,7 +231,7 @@ public class Arena extends AnchorPane implements EventHandler<Event> {
 				if ((0 < row && row < 19) && (0 < col  && col < 14)) {
 					//selectCoordinateUnhover(row, col);
 					
-					robot.updatePosition(col-1,19-row-1);
+					robot.updatePosition(col,19-row);
 					
 					setChangeCoordinate(false);
 				} else {
