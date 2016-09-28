@@ -54,7 +54,7 @@ public class Explorer {
 	}
 
 	private boolean halfCheck() {
-		if ((x>=12)&&(y>=17))
+		if ((x>=12)&&(y<=2))
 			return true;
 		else
 			return false;		
@@ -62,7 +62,7 @@ public class Explorer {
 	
 	private boolean notStart()
 	{
-		if ((x<=2)&&(y<=2))
+		if ((x<=2)&&(y>=17))
 			return false;
 		return true;
 	}
@@ -97,33 +97,33 @@ public class Explorer {
 			case 0:
 				for (i = 0; i < frontLeftDis ; i++)
 				{
-					grids[y + 2 + i][x - 1].setFreeSpace(true);
+					grids[y - 2 - i][x - 1].setFreeSpace(true);
 				}
-				if ((y + 2 + frontLeftDis < 20)&&(frontLeftDis < SHORTRANGE))
-					grids[y + 2 + frontLeftDis][x - 1].setFreeSpace(false);
+				if ((y - 2 - frontLeftDis >= 0)&&(frontLeftDis < SHORTRANGE))
+					grids[y - 2 - frontLeftDis][x - 1].setFreeSpace(false);
 
 				for (i = 0; i < frontStraDis; i++)
 				{
-					grids[y + 2 + i][x].setFreeSpace(true);
+					grids[y - 2 - i][x].setFreeSpace(true);
 				}
-				if ((y + 2 + frontStraDis < 20)&&(frontStraDis < SHORTRANGE))
-					grids[y + 2 + frontStraDis][x].setFreeSpace(false);
+				if ((y - 2 - frontStraDis >= 0)&&(frontStraDis < SHORTRANGE))
+					grids[y - 2 - frontStraDis][x].setFreeSpace(false);
 
 				for (i = 0; i < frontRightDis; i++)
 				{
-					grids[y + 2 + i][x + 1].setFreeSpace(true);
+					grids[y - 2 - i][x + 1].setFreeSpace(true);
 				}
-				if ((y + 2 + frontRightDis < 20)&&(frontRightDis < SHORTRANGE))
-					grids[y + 2 + frontRightDis][x + 1].setFreeSpace(false);
+				if ((y - 2 - frontRightDis >= 0)&&(frontRightDis < SHORTRANGE))
+					grids[y - 2 - frontRightDis][x + 1].setFreeSpace(false);
 				break;
 				
 			case 1:
 				for (i = 0; i < frontLeftDis; i++)
 				{
-					grids[y + 1][x + 2 + i].setFreeSpace(true);
+					grids[y - 1][x + 2 + i].setFreeSpace(true);
 				}
 				if ((x + 2 + frontLeftDis < 15)&&(frontLeftDis < SHORTRANGE))
-					grids[y + 1][x + 2 + frontLeftDis].setFreeSpace(false);
+					grids[y - 1][x + 2 + frontLeftDis].setFreeSpace(false);
 		
 				for (i = 0; i < frontStraDis; i++)
 				{
@@ -134,43 +134,43 @@ public class Explorer {
 
 				for (i = 0; i < frontRightDis; i++)
 				{
-					grids[y - 1][x + 2 + i].setFreeSpace(true);
+					grids[y + 1][x + 2 + i].setFreeSpace(true);
 				}
 				if ((x + 2 + frontRightDis < 15)&&(frontRightDis < SHORTRANGE))
-					grids[y - 1][x + 2 + frontRightDis].setFreeSpace(false);
+					grids[y + 1][x + 2 + frontRightDis].setFreeSpace(false);
 				break;
 
 			case 2:
 				for (i = 0; i < frontLeftDis; i++)
 				{
-					grids[y - 2 - i][x + 1].setFreeSpace(true);
+					grids[y + 2 + i][x + 1].setFreeSpace(true);
 				}
-				if ((y - 2 - frontLeftDis >= 0)&&(frontLeftDis < SHORTRANGE))
-					grids[y - 2 - frontLeftDis][x + 1].setFreeSpace(false);
+				if ((y + 2 + frontLeftDis <= 19)&&(frontLeftDis < SHORTRANGE))
+					grids[y + 2 + frontLeftDis][x + 1].setFreeSpace(false);
 		
 				for (i = 0; i < frontStraDis; i++)
 				{
-					grids[y - 2 - i][x].setFreeSpace(true);
+					grids[y + 2 + i][x].setFreeSpace(true);
 				}
-				if ((y - 2 - frontStraDis >= 0)&&(frontStraDis < SHORTRANGE))
-					grids[y - 2 - frontStraDis][x].setFreeSpace(false);
+				if ((y + 2 + frontStraDis <= 19)&&(frontStraDis < SHORTRANGE))
+					grids[y + 2 + frontStraDis][x].setFreeSpace(false);
 
 				for (i = 0; i < frontRightDis; i++)
 				{
-					grids[y - 2 - i][x - 1].setFreeSpace(true);
+					grids[y + 2 + i][x - 1].setFreeSpace(true);
 				}
-				if ((y - 2 - frontRightDis >= 0)&&(frontRightDis < SHORTRANGE))
-					grids[y - 2 - frontRightDis][x - 1].setFreeSpace(false);
+				if ((y + 2 + frontRightDis <= 19)&&(frontRightDis < SHORTRANGE))
+					grids[y + 2 + frontRightDis][x - 1].setFreeSpace(false);
 				break;
 
 			case 3:
 				for (i = 0; i < frontLeftDis; i++)
 				{
-					grids[y - 1][x - 2 - i].setFreeSpace(true);
+					grids[y + 1][x - 2 - i].setFreeSpace(true);
 				}
 				if ((x - 2 - frontLeftDis >= 0)&&(frontLeftDis < SHORTRANGE))
 				{
-					grids[y - 1][x - 2 - frontLeftDis].setFreeSpace(false);
+					grids[y + 1][x - 2 - frontLeftDis].setFreeSpace(false);
 				}
 		
 				for (i = 0; i < frontStraDis; i++)
@@ -184,11 +184,11 @@ public class Explorer {
 
 				for (i = 0; i < frontRightDis; i++)
 				{
-					grids[y + 1][x - 2 - i].setFreeSpace(true);
+					grids[y - 1][x - 2 - i].setFreeSpace(true);
 				}
 				if ((x - 2 - frontRightDis >= 0)&&(frontRightDis < SHORTRANGE))
 				{
-					grids[y + 1][x - 2 - frontRightDis].setFreeSpace(false);
+					grids[y - 1][x - 2 - frontRightDis].setFreeSpace(false);
 				}
 				break;
 		}	
@@ -218,10 +218,10 @@ public class Explorer {
 				{
 					for (i = 0; i < leftDis; i++)
 					{
-						grids[y + 2 + i][x].setFreeSpace(true);
+						grids[y - 2 - i][x].setFreeSpace(true);
 					}
-					if ((y + 2 + leftDis <= 19)&&(leftDis < SHORTRANGE))
-						grids[y + 2 + leftDis][x].setFreeSpace(false);
+					if ((y - 2 - leftDis >= 0)&&(leftDis < SHORTRANGE))
+						grids[y - 2 - leftDis][x].setFreeSpace(false);
 				}
 				break;
 
@@ -242,10 +242,10 @@ public class Explorer {
 				{
 					for (i = 0; i < leftDis; i++)
 					{
-						grids[y - 2 - i][x].setFreeSpace(true);
+						grids[y + 2 + i][x].setFreeSpace(true);
 					}
-					if ((y - 2 - leftDis >= 0)&&(leftDis < SHORTRANGE))
-						grids[y - 2 - leftDis][x].setFreeSpace(false);
+					if ((y + 2 + leftDis <= 19)&&(leftDis < SHORTRANGE))
+						grids[y + 2 + leftDis][x].setFreeSpace(false);
 				}
 				break;
 		}
@@ -275,10 +275,10 @@ public class Explorer {
 				{
 					for (i = 0; i < rightDis; i++)
 					{
-						grids[y - 2 - i][x].setFreeSpace(true);
+						grids[y + 2 + i][x].setFreeSpace(true);
 					}
-					if ((y - 2 - rightDis >= 0)&&(rightDis < LONGRANGE))
-						grids[y - 2 - rightDis][x].setFreeSpace(false);
+					if ((y + 2 + rightDis <= 19)&&(rightDis < LONGRANGE))
+						grids[y + 2 + rightDis][x].setFreeSpace(false);
 				}
 				break;
 
@@ -299,10 +299,10 @@ public class Explorer {
 				{
 					for (i = 0; i < rightDis; i++)
 					{
-						grids[y + 2 + i][x].setFreeSpace(true);
+						grids[y - 2 - i][x].setFreeSpace(true);
 					}
-					if ((y + 2 + rightDis <= 19)&&(rightDis < LONGRANGE))
-						grids[y + 2 + rightDis][x].setFreeSpace(false);
+					if ((y - 2 - rightDis >= 0)&&(rightDis < LONGRANGE))
+						grids[y - 2 - rightDis][x].setFreeSpace(false);
 				}
 				break;
 		}
@@ -314,6 +314,7 @@ public class Explorer {
 		int nextDir = currentDir/90;
 		System.out.println(nextDir);
 		//get data from robot
+		System.out.printf("x:%2d  |  y:%2d  |  dir:%3d\n", x, y, currentDir);
 		while(!done)
 		{
 			if ((half) && (!notStart())) {

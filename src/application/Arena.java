@@ -22,7 +22,7 @@ public class Arena extends AnchorPane implements EventHandler<Event> {
 		super();
 
 		// initialize the robot icon
-		robot = new Robot(1,1,0,grids);
+		robot = new Robot(1,18,0,grids);
 		
 		// 
 		changeCoordinate = false;
@@ -39,7 +39,7 @@ public class Arena extends AnchorPane implements EventHandler<Event> {
 			    grid.setOnMouseExited(this);
 			    grid.setOnMouseClicked(this);
 			    				    
-			    arena.add(grid, col, 19-row);
+			    arena.add(grid, col, row);
 			    grids[row][col] = grid;
 		    }
 	    }
@@ -70,25 +70,25 @@ public class Arena extends AnchorPane implements EventHandler<Event> {
 		try {
 			int tempChar;
 			reader = new InputStreamReader(new FileInputStream(file));
-			int row=0,col=0;
-		    while ((tempChar = reader.read())!=-1) {
-		    	if (col==15) {
-		    		System.out.println();
-		    		row++;
-		    		col = 0;
-		    	}		    	
+			int row=19,col=0;
+		    while ((tempChar = reader.read())!=-1) {		    			    	
 		    	if (tempChar==49) {
 	    	    	grids[row][col].setFreeSpace(false);	    	    
 	    		}
 		    	else if (tempChar==48) {
 	    			grids[row][col].setFreeSpace(true);
 	    		}		    	
-		    	if ((row<3)&&(col<3))
+		    	if ((row>16)&&(col<3))
 		    		grids[row][col].setStart();
-		    	else if ((row>16)&&(col>11))
+		    	else if ((row<3)&&(col>11))
 		    		grids[row][col].setGoal();
 		    	System.out.printf("%2d",tempChar-48);
 	    		col++;
+	    		if (col==15) {
+		    		System.out.println();
+		    		row--;
+		    		col = 0;
+		    	}
 		    }
 		    System.out.println();
 		} catch (FileNotFoundException e) {
@@ -231,7 +231,7 @@ public class Arena extends AnchorPane implements EventHandler<Event> {
 				if ((0 < row && row < 19) && (0 < col  && col < 14)) {
 					//selectCoordinateUnhover(row, col);
 					
-					robot.updatePosition(col,19-row);
+					robot.updatePosition(col,row);
 					
 					setChangeCoordinate(false);
 				} else {

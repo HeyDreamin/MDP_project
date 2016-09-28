@@ -39,7 +39,7 @@ public class Robot extends BorderPane {
 		super();
 		
 		this.x = x;//ini 1
-		this.y = y;//ini 1
+		this.y = y;//ini 18
 		this.direction = dir;
 		
 	    setBackground(rbg);
@@ -129,28 +129,6 @@ public class Robot extends BorderPane {
 		this.direction = direction;
 		robot.setRotate(direction);
 	}
-
-	//Read data from file now; Change to reading from sensor later!	
-	/*public String mapFilePath = "maps/grid.txt";
-	public void readMapFromFile() throws IOException {
-		File file = new File(mapFilePath);
-		Reader reader = null;
-		try {
-			int tempChar;
-			reader = new InputStreamReader(new FileInputStream(file));
-		    for (int row = 0; row > 20; row++) {
-		    	for (int col = 0; col < 15; col++) {
-		    		tempChar = reader.read();
-		    		if (tempChar==1)
-		    			originMap[row][col].setFreeSpace(false);
-		    		if (tempChar==0)
-		    			originMap[row][col].setFreeSpace(true);		    			
-		    	}		    	
-		    }
-		} catch (FileNotFoundException e) {
-			e.printStackTrace();
-		}		
-	}*/
 	
 	public void getFront()
 	{
@@ -164,7 +142,7 @@ public class Robot extends BorderPane {
 				switch (direction)
 				{
 					case 0:
-						if ((y + 2 + j <= 19)&&(originMap[y + 2 + j][x + i - 1].isFreeSpace())&&(!reach_wall))
+						if ((y - 2 - j >= 0)&&(originMap[y - 2 - j][x + i - 1].isFreeSpace())&&(!reach_wall))
 						{
 							dis++;
 						}
@@ -172,7 +150,7 @@ public class Robot extends BorderPane {
 							reach_wall = true;
 						break;
 					case 90:
-						if ((x + j + 2 <= 14)&&(originMap[y + 1 - i][x + j + 2].isFreeSpace())&&(!reach_wall))
+						if ((x + j + 2 <= 14)&&(originMap[y - 1 + i][x + j + 2].isFreeSpace())&&(!reach_wall))
 						{
 							dis++;
 						}
@@ -180,7 +158,7 @@ public class Robot extends BorderPane {
 							reach_wall = true;
 						break;
 					case 180:
-						if ((y - 2 - j >= 0)&&(originMap[y - 2 - j][x - i + 1].isFreeSpace())&&(!reach_wall))
+						if ((y + 2 + j <= 19)&&(originMap[y + 2 + j][x - i + 1].isFreeSpace())&&(!reach_wall))
 						{
 							dis++;
 						}
@@ -188,7 +166,7 @@ public class Robot extends BorderPane {
 							reach_wall = true;
 						break;
 					case 270:
-						if ((x - j - 2 >= 0)&&(originMap[y - 1 + i][x - j - 2].isFreeSpace())&&(!reach_wall))
+						if ((x - j - 2 >= 0)&&(originMap[y + 1 - i][x - j - 2].isFreeSpace())&&(!reach_wall))
 						{
 							dis++;
 						}
@@ -237,7 +215,7 @@ public class Robot extends BorderPane {
 							reach_wall = true;
 						break;
 					case 90:
-						if ((y + 2 + j <= 19)&&(originMap[y + 2 + j][x].isFreeSpace())&&(!reach_wall))
+						if ((y - 2 - j >= 0)&&(originMap[y - 2 - j][x].isFreeSpace())&&(!reach_wall))
 						{
 							dis++;
 						}
@@ -253,7 +231,7 @@ public class Robot extends BorderPane {
 							reach_wall = true;
 						break;
 					case 270:
-						if ((y - 2 - j >= 0)&&(originMap[y - 2 - j][x].isFreeSpace())&&(!reach_wall))
+						if ((y + 2 + j <= 19)&&(originMap[y + 2 + j][x].isFreeSpace())&&(!reach_wall))
 						{
 							dis++;
 						}
@@ -286,7 +264,7 @@ public class Robot extends BorderPane {
 						reach_wall =true;
 					break;
 				case 90:
-					if ((y - 2 - j >= 0)&&(originMap[y - 2 - j][x].isFreeSpace())&&(!reach_wall))
+					if ((y + 2 + j <= 19)&&(originMap[y + 2 + j][x].isFreeSpace())&&(!reach_wall))
 					{
 						dis++;
 					}
@@ -302,7 +280,7 @@ public class Robot extends BorderPane {
 						reach_wall =true;
 					break;
 				case 270:
-					if ((y + 2 + j <= 19)&&(originMap[y + 2 + j][x].isFreeSpace())&&(!reach_wall))
+					if ((y - 2 - j >= 0)&&(originMap[y - 2 - j][x].isFreeSpace())&&(!reach_wall))
 					{
 						dis++;
 					}
@@ -329,7 +307,7 @@ public class Robot extends BorderPane {
 		switch (dir)
 		{
 			case 0:
-				y += dis;
+				y -= dis;
 				setY(y);
 				break;
 
@@ -339,7 +317,7 @@ public class Robot extends BorderPane {
 				break;
 
 			case 2:
-				y -= dis;
+				y += dis;
 				setY(y);
 				break;
 
@@ -347,8 +325,7 @@ public class Robot extends BorderPane {
 				x -= dis;
 				setX(x);
 				break;
-		}
-		
+		}		
 	}
 	
 	public void turnLeft() {
@@ -381,22 +358,22 @@ public class Robot extends BorderPane {
 			switch(direction)
 			{
 				case 0:
-					if (originMap[y - 1][x - 2].isFreeSpace())
+					if (originMap[y + 1][x - 2].isFreeSpace())
 						maybe = true;
 					break;
 				
 				case 90:
-					if (originMap[y + 2][x - 1].isFreeSpace())
+					if (originMap[y - 2][x - 1].isFreeSpace())
 						maybe = true;
 					break;
 
 				case 180:
-					if (originMap[y + 1][x + 2].isFreeSpace())
+					if (originMap[y - 1][x + 2].isFreeSpace())
 						maybe = true;
 					break;
 
 				case 270:
-					if (originMap[y - 2][x + 1].isFreeSpace())
+					if (originMap[y + 2][x + 1].isFreeSpace())
 						maybe = true;
 					break;
 			}

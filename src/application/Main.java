@@ -132,8 +132,7 @@ public class Main extends Application implements EventHandler<Event> {
 					}
 					break;
 				case "btn_exploration":
-//					Robot robot = new Robot(1, 1, 0, arena.grids);
-					explorer = new Explorer(1, 1, 0, result.grids, arena.getRobot());
+					explorer = new Explorer(1, 18, 0, result.grids, arena.getRobot());
 					explorer.explore();
 					System.out.println("123");
 					break;
