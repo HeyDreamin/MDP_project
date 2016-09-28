@@ -109,7 +109,8 @@ public class Robot extends BorderPane {
 
 	public void setX(int x) {
 		this.x = x;
-		setLayoutX(x*30);
+		setLayoutX((x-1)*30);
+
 	}
 
 	public int getY() {
@@ -118,7 +119,7 @@ public class Robot extends BorderPane {
 
 	public void setY(int y) {
 		this.y = y;
-		setLayoutY(y*30);
+		setLayoutY((y-1)*30);
 	}
 
 	public int getDirection() {
@@ -308,22 +309,22 @@ public class Robot extends BorderPane {
 		{
 			case 0:
 				y -= dis;
-				setY(y);
+				updatePosition(x, y);				
 				break;
 
 			case 1:
 				x += dis;
-				setX(x);
+				updatePosition(x, y);
 				break;
 
 			case 2:
 				y += dis;
-				setY(y);
+				updatePosition(x, y);
 				break;
 
 			case 3:
 				x -= dis;
-				setX(x);
+				updatePosition(x, y);
 				break;
 		}		
 	}

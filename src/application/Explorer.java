@@ -76,6 +76,7 @@ public class Explorer {
 			e.printStackTrace();
 		}
 		robot.moveForward(dis, dir);
+		robot.setVisible(true);
 		if (halfCheck()&&(!half))
 			half = true;
 		x = robot.getX();
