@@ -2,9 +2,14 @@ package application;
 	
 import java.awt.Paint;
 import java.io.File;
+import java.io.FileWriter;
 import java.io.IOException;
+import java.util.Calendar;
+import java.util.Timer;
+import java.util.TimerTask;
 
 import javafx.application.Application;
+import javafx.concurrent.Task;
 import javafx.event.Event;
 import javafx.event.EventHandler;
 import javafx.geometry.Insets;
@@ -28,10 +33,11 @@ import javafx.stage.Stage;
 
 public class Main extends Application implements EventHandler<Event> {
 	private static Arena arena;
-	private static Arena result = new Arena();
+	private static Arena result;
 	private Stage stage;
 	private File workingDir, mapDir;
-	private static Explorer explorer;
+	private Explorer explorer;
+	
 	@Override
 	public void start(Stage primaryStage) {
 		try {
@@ -44,8 +50,9 @@ public class Main extends Application implements EventHandler<Event> {
 		    BorderPane bp = new BorderPane();
 		   
 		    arena = new Arena();
-		    
+		    result = new Arena();		    
 		    bp.setLeft(arena);
+		    bp.setRight(result);
 		    
 		    VBox vbox = new VBox(1);
 		    vbox.setPadding(new Insets(10));
@@ -75,7 +82,7 @@ public class Main extends Application implements EventHandler<Event> {
 		    mResetMap.setOnMouseClicked(this);
 		    
 		    vbox.getChildren().addAll(mCoordinate, mExploration, mFastestPath, mSaveMap, mLoadMap, mResetMap);
-		    bp.setRight(vbox);
+		    bp.setCenter(vbox);
 		    
 		    root.getChildren().add(bp);
 		    primaryStage.setScene(scene);
@@ -94,6 +101,34 @@ public class Main extends Application implements EventHandler<Event> {
 		launch(args);
 		return;
 	}
+	
+	public Timer timer = new Timer();
+	TimerTask timeLimit = new TimerTask() {			
+		@Override
+		public void run() {
+			// TODO Auto-generated method stub
+			System.out.println("Time's up.");
+			timer.cancel();
+			System.exit(0);
+			//add go back algo
+		}
+	};
+	TimerTask timeDisplay = new TimerTask(){
+		public void run() {
+			preMinute = c.get(Calendar.MINUTE) - startMinute;
+			preSecond = c.get(Calendar.SECOND) - startSecond;
+			preMillSec = c.get(Calendar.MILLISECOND) - startMillSec;
+			System.out.printf("Running Time: 0%d:%d:%d\n",preMinute,preSecond,preMillSec);			
+		}
+	};
+	Calendar c = Calendar.getInstance();
+	public int startMinute; 
+	public int startSecond;
+	public int startMillSec;
+	public int preMinute;
+	public int preSecond;
+	public int preMillSec;
+	
 	
 	@Override
 	public void handle(Event event) {
@@ -127,14 +162,50 @@ public class Main extends Application implements EventHandler<Event> {
 					file = filechooser.showSaveDialog(stage);
 					
 					if (file != null) {
-//						arena.loadMap(arena.generateMapDescriptor());
-//						System.out.println();
+						/*try {
+							FileWriter fw = new FileWriter(file,true);
+							fw.write(arena.encodeMapDescriptor());
+							fw.close();							
+						} catch (IOException e) {
+							e.printStackTrace();
+						}
+						arena.loadMap(arena.generateMapDescriptor());
+						System.out.println();*/
 					}
 					break;
 				case "btn_exploration":
-					explorer = new Explorer(1, 18, 0, result.grids, arena.getRobot());
-					explorer.explore();
-					System.out.println("123");
+					result.getRobot().setMap(arena.grids);
+					explorer = new Explorer(1, 18, 0, result.grids, result.getRobot());
+					
+					
+					
+					startMinute = c.get(Calendar.MINUTE);
+					startSecond = c.get(Calendar.SECOND);
+					startMillSec = c.get(Calendar.MILLISECOND);
+					//timer.scheduleAtFixedRate(timeDisplay, 0, 200);
+					//timer.schedule(timeLimit, 3000);
+					Thread th = new Thread(new Runnable() {
+						
+						@Override
+						public void run() {
+							// TODO Auto-generated method stub
+							explorer.explore();
+							for (int i=0;i<20;i++) {
+								for (int j=0;j<15;j++) {
+									if (result.grids[i][j].isFreeSpace())
+										System.out.printf("%3d",0);
+									else if (result.grids[i][j].isUnknown())
+										System.out.printf("%3s", "*");
+									else if (result.grids[i][j].isWall())
+										System.out.printf("%3d",1);				
+								}
+								System.out.println();
+							}
+						}
+					});
+					
+					th.setDaemon(true);
+					th.start();
 					break;
 				case "btn_fastest_path":
 					arena.getRobot().moveForward(1, 0);

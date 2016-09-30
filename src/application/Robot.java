@@ -54,6 +54,10 @@ public class Robot extends BorderPane {
 	    setCenter(robot);
 	    setVisible(false);
 	}
+	
+	public void setMap(Grid[][] map) {
+		originMap = map;
+	}
 
 	public int getFrontLeftDis() {
 		return frontLeftDis;
@@ -131,7 +135,7 @@ public class Robot extends BorderPane {
 		robot.setRotate(direction);
 	}
 	
-	public void getFront()
+	public void getFrontData()
 	{
 		int i,j,dis;
 		boolean reach_wall = false;
@@ -291,6 +295,8 @@ public class Robot extends BorderPane {
 				default:
 					break;
 			}
+			if (reach_wall)
+				break;
 		}
 		setRightDis(dis);
 	}
@@ -298,7 +304,7 @@ public class Robot extends BorderPane {
 	public void getData()
 	{
 		getLeftData();
-		getFront();
+		getFrontData();
 		getRightData();
 		return;
 	}
@@ -330,11 +336,11 @@ public class Robot extends BorderPane {
 	}
 	
 	public void turnLeft() {
-		setDirection((direction-90)%360);
+		setDirection((direction+270)%360);
 	}
 	
 	public void turnRight() {
-		setDirection((direction-90)%360);
+		setDirection((direction+90)%360);
 	}
 	
 	public void updatePosition(int x, int y) {
@@ -344,7 +350,7 @@ public class Robot extends BorderPane {
 	
 	public boolean checkFront()
 	{
-		getFront();
+		getFrontData();		
 		if ((frontLeftDis>0)&&(frontStraDis>0)&&(frontRightDis>0))
 			return true;
 		return false;
@@ -356,7 +362,13 @@ public class Robot extends BorderPane {
 		getLeftData();
 		if (leftDis>0)
 		{
-			switch(direction)
+			turnLeft();
+			if (checkFront())
+				return true;
+			else {
+				return false;
+			}
+			/*switch(direction)
 			{
 				case 0:
 					if (originMap[y + 1][x - 2].isFreeSpace())
@@ -381,12 +393,12 @@ public class Robot extends BorderPane {
 			if (maybe)
 			{
 				direction = (direction + 270) % 360; 
-				getFront();
+				getFrontData();
 				if (frontRightDis>0)
 				{
 					return true;
 				}
-			}
+			}*/
 		}
 		return false;
 	}	

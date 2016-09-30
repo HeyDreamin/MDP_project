@@ -1,4 +1,7 @@
 package application;
+import java.io.IOException;
+import java.text.SimpleDateFormat;
+import java.util.*;
 
 public class Explorer {
 	private static final int SHORTRANGE = 5;
@@ -8,10 +11,10 @@ public class Explorer {
 	private int y;
 	private boolean done = false, half = false;
 	private Grid[][] grids;
-	private Robot robot;
+	private Robot robot;	
+	private boolean warden = false;
+	private List<PathNode> exploredRoutes;
 	
-	
-
 	public Explorer(int x, int y, int currentDir, Grid[][] grids, Robot robot) {
 		super();
 		this.x = x;
@@ -19,6 +22,13 @@ public class Explorer {
 		this.currentDir = currentDir;
 		this.grids = grids;
 		this.robot = robot;
+        exploredRoutes = new ArrayList<>();
+		
+		for (int i=0;i<3;i++)
+			for (int j=0;j<3;j++) {
+				grids[i+17][j].setStart();
+				grids[i][j+12].setGoal();				
+			}
 	}
 
 	public boolean isDone() {
@@ -70,9 +80,8 @@ public class Explorer {
 	private void moveForwardRobot(int dis, int dir) {
 		//add robot control things here
 		try {
-			Thread.sleep(100);
+			Thread.sleep(1000);
 		} catch (InterruptedException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 		robot.moveForward(dis, dir);
@@ -81,10 +90,44 @@ public class Explorer {
 			half = true;
 		x = robot.getX();
 		y = robot.getY();
-
-		System.out.printf("x:%2d  |  y:%2d  |  dir:%3d\n", x, y, currentDir);
+		exploredRoutes.add(new PathNode(x, y, currentDir));
+		/*System.out.println("---------------------------------------------------");
+		System.out.println(robot.getRightDis());
+		System.out.printf("x:%2d  |  y:%2d  |  dir:%3d\n", x, y, dir*90);
+		grids[y][x].setRobot();
+		for (int i=0;i<20;i++) {
+			for (int j=0;j<15;j++) {
+				if (grids[i][j].isFreeSpace())
+					System.out.printf("%3d",0);
+				else if (grids[i][j].isUnknown())
+					System.out.printf("%3s", "*");
+				else if (grids[i][j].isWall())
+					System.out.printf("%3d",1);	
+				else if (grids[i][j].isRobot()) 
+					drawRobot(dir*90);
+			}
+			System.out.println();
+		}
+		grids[y][x].setFreeSpace();*/
 		return;
-	}	
+	}
+	
+	public void drawRobot(int dir) {
+		switch (dir) {
+			case 0:
+				System.out.printf("  \u2191");
+				break;
+			case 90:
+				System.out.printf("  \u2192");
+				break;
+			case 180:
+				System.out.printf("  \u2193");
+				break;
+			case 270:
+				System.out.printf("  \u2190");
+				break;		
+		}
+	}
 
 	private void drawFront(int dir)
 	{
@@ -93,103 +136,104 @@ public class Explorer {
 		int frontLeftDis = robot.getFrontLeftDis();
 		int frontStraDis = robot.getFrontStraDis();
 		int frontRightDis = robot.getFrontRightDis();
+		dir = dir / 90;
 		switch (dir)
 		{
 			case 0:
 				for (i = 0; i < frontLeftDis ; i++)
 				{
-					grids[y - 2 - i][x - 1].setFreeSpace(true);
+					grids[y - 2 - i][x - 1].setFreeSpace();
 				}
 				if ((y - 2 - frontLeftDis >= 0)&&(frontLeftDis < SHORTRANGE))
-					grids[y - 2 - frontLeftDis][x - 1].setFreeSpace(false);
+					grids[y - 2 - frontLeftDis][x - 1].setWall();
 
 				for (i = 0; i < frontStraDis; i++)
 				{
-					grids[y - 2 - i][x].setFreeSpace(true);
+					grids[y - 2 - i][x].setFreeSpace();
 				}
 				if ((y - 2 - frontStraDis >= 0)&&(frontStraDis < SHORTRANGE))
-					grids[y - 2 - frontStraDis][x].setFreeSpace(false);
+					grids[y - 2 - frontStraDis][x].setWall();
 
 				for (i = 0; i < frontRightDis; i++)
 				{
-					grids[y - 2 - i][x + 1].setFreeSpace(true);
+					grids[y - 2 - i][x + 1].setFreeSpace();
 				}
 				if ((y - 2 - frontRightDis >= 0)&&(frontRightDis < SHORTRANGE))
-					grids[y - 2 - frontRightDis][x + 1].setFreeSpace(false);
+					grids[y - 2 - frontRightDis][x + 1].setWall();
 				break;
 				
 			case 1:
 				for (i = 0; i < frontLeftDis; i++)
 				{
-					grids[y - 1][x + 2 + i].setFreeSpace(true);
+					grids[y - 1][x + 2 + i].setFreeSpace();
 				}
 				if ((x + 2 + frontLeftDis < 15)&&(frontLeftDis < SHORTRANGE))
-					grids[y - 1][x + 2 + frontLeftDis].setFreeSpace(false);
-		
+					grids[y - 1][x + 2 + frontLeftDis].setWall();
+				
 				for (i = 0; i < frontStraDis; i++)
 				{
-					grids[y][x + 2 + i].setFreeSpace(true);
+					grids[y][x + 2 + i].setFreeSpace();
 				}
 				if ((x + 2 + frontStraDis < 15)&&(frontStraDis < SHORTRANGE))
-					grids[y][x + 2 + frontStraDis].setFreeSpace(false);
+					grids[y][x + 2 + frontStraDis].setWall();
 
 				for (i = 0; i < frontRightDis; i++)
 				{
-					grids[y + 1][x + 2 + i].setFreeSpace(true);
+					grids[y + 1][x + 2 + i].setFreeSpace();
 				}
 				if ((x + 2 + frontRightDis < 15)&&(frontRightDis < SHORTRANGE))
-					grids[y + 1][x + 2 + frontRightDis].setFreeSpace(false);
+					grids[y + 1][x + 2 + frontRightDis].setWall();
 				break;
 
 			case 2:
 				for (i = 0; i < frontLeftDis; i++)
 				{
-					grids[y + 2 + i][x + 1].setFreeSpace(true);
+					grids[y + 2 + i][x + 1].setFreeSpace();
 				}
 				if ((y + 2 + frontLeftDis <= 19)&&(frontLeftDis < SHORTRANGE))
-					grids[y + 2 + frontLeftDis][x + 1].setFreeSpace(false);
+					grids[y + 2 + frontLeftDis][x + 1].setWall();
 		
 				for (i = 0; i < frontStraDis; i++)
 				{
-					grids[y + 2 + i][x].setFreeSpace(true);
+					grids[y + 2 + i][x].setFreeSpace();
 				}
 				if ((y + 2 + frontStraDis <= 19)&&(frontStraDis < SHORTRANGE))
-					grids[y + 2 + frontStraDis][x].setFreeSpace(false);
+					grids[y + 2 + frontStraDis][x].setWall();
 
 				for (i = 0; i < frontRightDis; i++)
 				{
-					grids[y + 2 + i][x - 1].setFreeSpace(true);
+					grids[y + 2 + i][x - 1].setFreeSpace();
 				}
 				if ((y + 2 + frontRightDis <= 19)&&(frontRightDis < SHORTRANGE))
-					grids[y + 2 + frontRightDis][x - 1].setFreeSpace(false);
+					grids[y + 2 + frontRightDis][x - 1].setWall();
 				break;
 
 			case 3:
 				for (i = 0; i < frontLeftDis; i++)
 				{
-					grids[y + 1][x - 2 - i].setFreeSpace(true);
+					grids[y + 1][x - 2 - i].setFreeSpace();
 				}
 				if ((x - 2 - frontLeftDis >= 0)&&(frontLeftDis < SHORTRANGE))
 				{
-					grids[y + 1][x - 2 - frontLeftDis].setFreeSpace(false);
+					grids[y + 1][x - 2 - frontLeftDis].setWall();
 				}
 		
 				for (i = 0; i < frontStraDis; i++)
 				{
-					grids[y][x - 2 - i].setFreeSpace(true);
+					grids[y][x - 2 - i].setFreeSpace();
 				}
 				if ((x - 2 - frontStraDis >= 0)&&(frontStraDis < SHORTRANGE))
 				{
-					grids[y][x - 2 - frontStraDis].setFreeSpace(false);
+					grids[y][x - 2 - frontStraDis].setWall();
 				}
 
 				for (i = 0; i < frontRightDis; i++)
 				{
-					grids[y - 1][x - 2 - i].setFreeSpace(true);
+					grids[y - 1][x - 2 - i].setFreeSpace();
 				}
 				if ((x - 2 - frontRightDis >= 0)&&(frontRightDis < SHORTRANGE))
 				{
-					grids[y - 1][x - 2 - frontRightDis].setFreeSpace(false);
+					grids[y - 1][x - 2 - frontRightDis].setWall();
 				}
 				break;
 		}	
@@ -207,10 +251,10 @@ public class Explorer {
 				{
 					for (i = 0; i < leftDis; i++)
 					{
-						grids[y][x - 2 - i].setFreeSpace(true);
+						grids[y][x - 2 - i].setFreeSpace();
 					}
 					if ((x - 2 - leftDis >= 0)&&(leftDis < SHORTRANGE))
-						grids[y][x - 2 - leftDis].setFreeSpace(false);
+						grids[y][x - 2 - leftDis].setWall();
 				}
 				break;
 				
@@ -219,10 +263,10 @@ public class Explorer {
 				{
 					for (i = 0; i < leftDis; i++)
 					{
-						grids[y - 2 - i][x].setFreeSpace(true);
+						grids[y - 2 - i][x].setFreeSpace();
 					}
 					if ((y - 2 - leftDis >= 0)&&(leftDis < SHORTRANGE))
-						grids[y - 2 - leftDis][x].setFreeSpace(false);
+						grids[y - 2 - leftDis][x].setWall();
 				}
 				break;
 
@@ -231,10 +275,10 @@ public class Explorer {
 				{
 					for (i = 0; i < leftDis; i++)
 					{
-						grids[y][x + 2 + i].setFreeSpace(true);
+						grids[y][x + 2 + i].setFreeSpace();
 					}
 					if ((x + 2 + leftDis <= 14)&&(leftDis < SHORTRANGE))
-						grids[y][x + 2 + leftDis].setFreeSpace(false);
+						grids[y][x + 2 + leftDis].setWall();
 				}
 				break;
 
@@ -243,10 +287,10 @@ public class Explorer {
 				{
 					for (i = 0; i < leftDis; i++)
 					{
-						grids[y + 2 + i][x].setFreeSpace(true);
+						grids[y + 2 + i][x].setFreeSpace();
 					}
 					if ((y + 2 + leftDis <= 19)&&(leftDis < SHORTRANGE))
-						grids[y + 2 + leftDis][x].setFreeSpace(false);
+						grids[y + 2 + leftDis][x].setWall();
 				}
 				break;
 		}
@@ -264,22 +308,22 @@ public class Explorer {
 				{
 					for (i = 0; i < rightDis; i++)
 					{
-						grids[y][x + 2 + i].setFreeSpace(true);
+						grids[y][x + 2 + i].setFreeSpace();
 					}
 					if ((x + 2 + rightDis <= 14)&&(rightDis < LONGRANGE))
-						grids[y][x + 2 + rightDis].setFreeSpace(false);
+						grids[y][x + 2 + rightDis].setWall();
 				}
 				break;
 				
 			case 1:
-				if (y > 1)
+				if (y < 17)
 				{
 					for (i = 0; i < rightDis; i++)
 					{
-						grids[y + 2 + i][x].setFreeSpace(true);
+						grids[y + 2 + i][x].setFreeSpace();
 					}
 					if ((y + 2 + rightDis <= 19)&&(rightDis < LONGRANGE))
-						grids[y + 2 + rightDis][x].setFreeSpace(false);
+						grids[y + 2 + rightDis][x].setWall();
 				}
 				break;
 
@@ -288,44 +332,123 @@ public class Explorer {
 				{
 					for (i = 0; i < rightDis; i++)
 					{
-						grids[y][x - 2 - i].setFreeSpace(true);
+						grids[y][x - 2 - i].setFreeSpace();
 					}
 					if ((x - 2 - rightDis >= 0)&&(rightDis < LONGRANGE))
-						grids[y][x - 2 - rightDis].setFreeSpace(false);
+						grids[y][x - 2 - rightDis].setWall();
 				}
 				break;
 
 			case 3:
-				if (y < 18)
+				if (y > 1)
 				{
 					for (i = 0; i < rightDis; i++)
 					{
-						grids[y - 2 - i][x].setFreeSpace(true);
+						grids[y - 2 - i][x].setFreeSpace();
 					}
 					if ((y - 2 - rightDis >= 0)&&(rightDis < LONGRANGE))
-						grids[y - 2 - rightDis][x].setFreeSpace(false);
+						grids[y - 2 - rightDis][x].setWall();
 				}
 				break;
 		}
 		return;
 	}
+
+	public List<PathNode> getExploredRoutes() {
+        return exploredRoutes;
+    }
 	
-	public void explore() {
+	Calendar c = Calendar.getInstance();
+	public int startMinute; 
+	public int startSecond;
+	public int startMillSec;
+	public int preMinute;
+	public int preSecond;
+	public int preMillSec;
+	
+	public int getPreMinute() {
+		return preMinute;
+	}
+
+	public void setPreMinute(int preMinute) {
+		this.preMinute = preMinute;
+	}
+
+	public int getPreSecond() {
+		return preSecond;
+	}
+
+	public void setPreSecond(int preSecond) {
+		this.preSecond = preSecond;
+	}
+
+	public int getPreMillSec() {
+		return preMillSec;
+	}
+
+	public void setPreMillSec(int preMillSec) {
+		this.preMillSec = preMillSec;
+	}
+	
+	public String getRunningTime() {
+		return ("Running Time: "+preMinute+":"+preSecond+":"+preMillSec);
+	}
+
+	public Timer timer = new Timer();
+	TimerTask timeLimit = new TimerTask() {			
+		@Override
+		public void run() {
+			// TODO Auto-generated method stub
+			System.out.println("Time's up.");
+			timer.cancel();
+			System.exit(0);
+			//add go back algo
+		}
+	};
+	TimerTask timeDisplay = new TimerTask(){
+		public void run() {
+			preMinute = c.get(Calendar.MINUTE) - startMinute;
+			preSecond = c.get(Calendar.SECOND) - startSecond;
+			preMillSec = c.get(Calendar.MILLISECOND) - startMillSec;
+			System.out.printf("Running Time: 0%d:%d:%d\n",preMinute,preSecond,preMillSec);			
+		}
+	};
+	
+ 	public void explore() {
+ 		exploredRoutes.clear();
 		boolean needleft = false;
 		int nextDir = currentDir/90;
 		System.out.println(nextDir);
-		//get data from robot
 		System.out.printf("x:%2d  |  y:%2d  |  dir:%3d\n", x, y, currentDir);
+		
+		startMinute = c.get(Calendar.MINUTE);
+		startSecond = c.get(Calendar.SECOND);
+		startMillSec = c.get(Calendar.MILLISECOND);
+		//timer.scheduleAtFixedRate(timeDisplay, 0, 200);
+		//timer.schedule(timeLimit, 3000);
+		
+		
+		robot.setDirection(0);
+		robot.getFrontData();
+		drawFront(0);
+		robot.getLeftData();
+		drawLeft(0);
+		robot.getRightData();
+		drawRight(0);
+		
+		
 		while(!done)
 		{
+			
 			if ((half) && (!notStart())) {
 				done = true;
 				System.out.println("Done.");
 				return;
-			}				
-			//System.out.println(nextDir);
+			}
 			if (needleft)
 			{
+				currentDir = nextDir;
+				robot.setDirection(nextDir*90);
 				moveForwardRobot(1, nextDir);
 				if (done)
 					return;
@@ -343,13 +466,20 @@ public class Explorer {
 					robot.setDirection(0);
 					if (robot.checkLeft())
 					{	
-						drawFront(currentDir);
+						robot.getFrontData();
+						drawFront(robot.getDirection());
 						nextDir = 3;
 						needleft = true;					
 						break;
-					}	
+					}
+					else {
+						robot.getFrontData();
+						drawFront(robot.getDirection());
+					}
+					robot.setDirection(0);
 					while (robot.checkFront())
 					{
+						robot.getFrontData();
 						drawFront(currentDir);
 						moveForwardRobot(1, 0);
 						if (done)
@@ -360,11 +490,17 @@ public class Explorer {
 						drawRight(0);
 						if (robot.checkLeft())
 						{
-							drawFront(currentDir);
+							robot.getFrontData();
+							drawFront(robot.getDirection());
 							nextDir = 3;
 							needleft = true;
 							break;
 						}
+						else {
+							robot.getFrontData();
+							drawFront(robot.getDirection());
+						}
+						robot.setDirection(0);
 					}
 					if (nextDir==3)
 						break;
@@ -375,14 +511,21 @@ public class Explorer {
 					robot.setDirection(90);
 					if (robot.checkLeft())
 					{
-						drawFront(currentDir);
+						robot.getFrontData();
+						drawFront(robot.getDirection());
 						nextDir = 0;
 						needleft = true;
 						break;
 					}
+					else {
+						robot.getFrontData();
+						drawFront(robot.getDirection());
+					}
+					robot.setDirection(90);
 					while (robot.checkFront())
 					{
-						drawFront(currentDir);
+						robot.getFrontData();
+						drawFront(90);						
 						moveForwardRobot(1, 1);
 						if (done)
 							return;
@@ -392,11 +535,17 @@ public class Explorer {
 						drawRight(1);					
 						if (robot.checkLeft())
 						{
-							drawFront(currentDir);
+							robot.getFrontData();
+							drawFront(robot.getDirection());
 							nextDir = 0;
 							needleft = true;
 							break;
 						}
+						else {
+							robot.getFrontData();
+							drawFront(robot.getDirection());
+						}
+						robot.setDirection(90);						
 					}
 					if (nextDir==0)
 						break;
@@ -407,13 +556,20 @@ public class Explorer {
 					robot.setDirection(180);
 					if (robot.checkLeft())
 					{
-						drawFront(currentDir);
+						robot.getFrontData();
+						drawFront(robot.getDirection());
 						nextDir = 1;
 						needleft = true;
 						break;
 					}
+					else {
+						robot.getFrontData();
+						drawFront(robot.getDirection());
+					}
+					robot.setDirection(180);
 					while (robot.checkFront())
 					{
+						robot.getFrontData();
 						drawFront(currentDir);
 						moveForwardRobot(1, 2);
 						if (done)
@@ -424,11 +580,17 @@ public class Explorer {
 						drawRight(2);					
 						if (robot.checkLeft())
 						{
-							drawFront(currentDir);
+							robot.getFrontData();
+							drawFront(robot.getDirection());
 							nextDir = 1;
 							needleft = true;
 							break;
 						}
+						else {
+							robot.getFrontData();
+							drawFront(robot.getDirection());
+						}
+						robot.setDirection(180);
 					}
 					if (nextDir==1)
 						break;
@@ -439,13 +601,20 @@ public class Explorer {
 					robot.setDirection(270);
 					if (robot.checkLeft())
 					{
-						drawFront(currentDir);
+						robot.getFrontData();
+						drawFront(robot.getDirection());
 						nextDir = 2;
 						needleft = true;
 						break;
 					}
+					else {
+						robot.getFrontData();
+						drawFront(robot.getDirection());
+					}
+					robot.setDirection(270);
 					while (robot.checkFront())
 					{
+						robot.getFrontData();
 						drawFront(currentDir);
 						moveForwardRobot(1, 3);
 						if (done)
@@ -456,11 +625,17 @@ public class Explorer {
 						drawRight(3);					
 						if (robot.checkLeft())
 						{
-							drawFront(currentDir);
+							robot.getFrontData();
+							drawFront(robot.getDirection());
 							nextDir = 2;
 							needleft = true;
 							break;
 						}
+						else {
+							robot.getFrontData();
+							drawFront(robot.getDirection());
+						}
+						robot.setDirection(270);
 					}
 					if (nextDir==2)
 						break;
@@ -468,5 +643,6 @@ public class Explorer {
 					break;
 			}
 		}
+		
 	}	
 }

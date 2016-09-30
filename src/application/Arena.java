@@ -73,16 +73,16 @@ public class Arena extends AnchorPane implements EventHandler<Event> {
 			int row=19,col=0;
 		    while ((tempChar = reader.read())!=-1) {		    			    	
 		    	if (tempChar==49) {
-	    	    	grids[row][col].setFreeSpace(false);	    	    
+	    	    	grids[row][col].setWall();	    	    
 	    		}
 		    	else if (tempChar==48) {
-	    			grids[row][col].setFreeSpace(true);
-	    		}		    	
+	    			grids[row][col].setFreeSpace();
+	    		}	    	
 		    	if ((row>16)&&(col<3))
 		    		grids[row][col].setStart();
 		    	else if ((row<3)&&(col>11))
 		    		grids[row][col].setGoal();
-		    	System.out.printf("%2d",tempChar-48);
+		    	System.out.printf("%3d",tempChar-48);
 	    		col++;
 	    		if (col==15) {
 		    		System.out.println();
@@ -93,7 +93,7 @@ public class Arena extends AnchorPane implements EventHandler<Event> {
 		    System.out.println();
 		} catch (FileNotFoundException e) {
 			e.printStackTrace();
-		}		
+		}
 	}
 	
 	public void loadMap(String mdf) {
@@ -103,9 +103,13 @@ public class Arena extends AnchorPane implements EventHandler<Event> {
 		for (int row = 0; row < 20; row++) {
 	    	for (int col = 0; col < 15; col++) {
 	    		i = Integer.parseInt(bin[index++]);
-	    		grids[row][col].setFreeSpace((i==0)); 
+	    		grids[row][col].setFreeSpace(); 
 		    }
 	    }
+	}
+	
+	public void printMap() {
+		
 	}
 	
 	public String generateMapDescriptor() {
@@ -203,17 +207,17 @@ public class Arena extends AnchorPane implements EventHandler<Event> {
 			int topcol   = col-1;
 			int bottomcol= col+1;
 
-			grids[leftrow][col].invalidate();
-			grids[leftrow][topcol].invalidate();
-			grids[leftrow][bottomcol].invalidate();
+			grids[leftrow][col].validate();
+			grids[leftrow][topcol].validate();
+			grids[leftrow][bottomcol].validate();
 
-			grids[row][col].invalidate();
-			grids[row][topcol].invalidate();
-			grids[row][bottomcol].invalidate();
+			grids[row][col].validate();
+			grids[row][topcol].validate();
+			grids[row][bottomcol].validate();
 
-			grids[rightrow][col].invalidate();
-			grids[rightrow][topcol].invalidate();
-			grids[rightrow][bottomcol].invalidate();
+			grids[rightrow][col].validate();
+			grids[rightrow][topcol].validate();
+			grids[rightrow][bottomcol].validate();
 		}
 	}
 	
@@ -246,9 +250,9 @@ public class Arena extends AnchorPane implements EventHandler<Event> {
 		} else {
 			if (evt.equals("MOUSE_CLICKED")) {
 				if (grid.isFreeSpace()) {
-					grid.setFreeSpace(false);
+					grid.setWall();
 				} else {
-					grid.setFreeSpace(true);
+					grid.setFreeSpace();
 				}
 			} 
 		}		
