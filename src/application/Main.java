@@ -106,7 +106,6 @@ public class Main extends Application implements EventHandler<Event> {
 	TimerTask timeLimit = new TimerTask() {			
 		@Override
 		public void run() {
-			// TODO Auto-generated method stub
 			System.out.println("Time's up.");
 			timer.cancel();
 			System.exit(0);
@@ -150,6 +149,7 @@ public class Main extends Application implements EventHandler<Event> {
 					if (file != null) {
 						try {
 							arena.readMapFromFile(file);
+							//arena.loadMap(file);
 						} catch (IOException e) {
 							e.printStackTrace();
 						}
@@ -162,35 +162,37 @@ public class Main extends Application implements EventHandler<Event> {
 					file = filechooser.showSaveDialog(stage);
 					
 					if (file != null) {
-						/*try {
-							FileWriter fw = new FileWriter(file,true);
+						try {
+							FileWriter fw = new FileWriter(file,false);
 							fw.write(arena.encodeMapDescriptor());
-							fw.close();							
+							fw.close();
+
 						} catch (IOException e) {
 							e.printStackTrace();
 						}
-						arena.loadMap(arena.generateMapDescriptor());
-						System.out.println();*/
 					}
 					break;
 				case "btn_exploration":
 					result.getRobot().setMap(arena.grids);
 					explorer = new Explorer(1, 18, 0, result.grids, result.getRobot());
 					
-					
+					//add GUI set time limit
+					explorer.setTimePerStep(400);
 					
 					startMinute = c.get(Calendar.MINUTE);
 					startSecond = c.get(Calendar.SECOND);
 					startMillSec = c.get(Calendar.MILLISECOND);
 					//timer.scheduleAtFixedRate(timeDisplay, 0, 200);
 					//timer.schedule(timeLimit, 3000);
-					Thread th = new Thread(new Runnable() {
-						
+					Thread th = new Thread(new Runnable() {						
 						@Override
 						public void run() {
-							// TODO Auto-generated method stub
-							explorer.explore();
-							for (int i=0;i<20;i++) {
+							try {
+								explorer.explore();
+							} catch (InterruptedException e) {
+								e.printStackTrace();
+							}
+							/*for (int i=0;i<20;i++) {
 								for (int j=0;j<15;j++) {
 									if (result.grids[i][j].isFreeSpace())
 										System.out.printf("%3d",0);
@@ -200,7 +202,7 @@ public class Main extends Application implements EventHandler<Event> {
 										System.out.printf("%3d",1);				
 								}
 								System.out.println();
-							}
+							}*/
 						}
 					});
 					
@@ -208,7 +210,11 @@ public class Main extends Application implements EventHandler<Event> {
 					th.start();
 					break;
 				case "btn_fastest_path":
-					arena.getRobot().moveForward(1, 0);
+					AStar astar = new AStar(arena);
+					astar.start();
+					break;
+				case "btn_reset_map":
+					//arena.resetMap();
 					break;
 			}			
 		} 

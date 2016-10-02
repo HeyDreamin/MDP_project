@@ -130,9 +130,10 @@ public class Robot extends BorderPane {
 		return direction;
 	}
 
-	public void setDirection(int direction) {
+	public void setDirection(int direction) throws InterruptedException {
 		this.direction = direction;
 		robot.setRotate(direction);
+		Thread.sleep(500);
 	}
 	
 	public void getFrontData()
@@ -309,37 +310,38 @@ public class Robot extends BorderPane {
 		return;
 	}
 	
-	public void moveForward(int dis, int dir)
+	public void moveForward(int dis, int dir) throws InterruptedException
 	{
 		switch (dir)
 		{
 			case 0:
-				y -= dis;
-				updatePosition(x, y);				
+				y -= dis;				
 				break;
 
 			case 1:
+			case 90:
 				x += dis;
-				updatePosition(x, y);
 				break;
 
 			case 2:
+			case 180:
 				y += dis;
-				updatePosition(x, y);
 				break;
 
 			case 3:
+			case 270:
 				x -= dis;
-				updatePosition(x, y);
 				break;
-		}		
+		}
+		updatePosition(x, y);
+		Thread.sleep(500);	
 	}
 	
-	public void turnLeft() {
+	public void turnLeft() throws InterruptedException {
 		setDirection((direction+270)%360);
 	}
 	
-	public void turnRight() {
+	public void turnRight() throws InterruptedException {
 		setDirection((direction+90)%360);
 	}
 	
@@ -356,7 +358,7 @@ public class Robot extends BorderPane {
 		return false;
 	}
 
-	public boolean checkLeft()
+	public boolean checkLeft() throws InterruptedException
 	{
 		boolean maybe = false;
 		getLeftData();

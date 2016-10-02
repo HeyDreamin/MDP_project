@@ -19,15 +19,25 @@ public class Grid extends Label {
 	public static BackgroundFill FILL_UNKNOWN = new BackgroundFill(Color.DARKGRAY, null, null);
 	public static Background BG_UNKNOWN = new Background(FILL_UNKNOWN);	
 
-	private Status status;
+	public Status status;
 	
-	private int row, col;
+	private int row, col, hCost, fianlCost;
+	private Grid parent;
 	
 	public Grid(int row, int col) {
 		//setFreeSpace(true);
 		setUnknown();
 		this.row = row;
 		this.col = col;
+		this.hCost = Math.abs(1 - row) + Math.abs(13 - col);
+	}
+	
+	public void setGridParent(Grid parent) {
+		this.parent = parent;
+	}
+	
+	public Grid getGridParent() {
+		return parent;
 	}
 	
 	public int getRowIndex() {
@@ -62,6 +72,8 @@ public class Grid extends Label {
 	}
 
 	public void setFreeSpace() {
+		if (status==Status.START || status==Status.GOAL)
+			return;
 		status = Status.FREE_SPACE;
 		setBackground(BG_FREESPACE);
 	}
@@ -110,5 +122,21 @@ public class Grid extends Label {
 	
 	public enum Status {
 		FREE_SPACE, WALL, UNKNOWN, GOAL, START, ROBOT
+	}
+
+	public void sethCost(int hCost) {
+		this.hCost = hCost;
+	}
+	
+	public int gethCost() {
+		return hCost;
+	}
+	
+	public void setfinalCost(int finalCost) {
+		this.fianlCost = finalCost;
+	}
+	
+	public int getfinalCost() {
+		return fianlCost;
 	}
 }

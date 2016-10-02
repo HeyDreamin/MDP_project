@@ -15,6 +15,10 @@ public class Explorer {
 	private boolean warden = false;
 	private List<PathNode> exploredRoutes;
 	
+	private int timePerStep;
+	private int timeLimit;
+	private int steps;
+	
 	public Explorer(int x, int y, int currentDir, Grid[][] grids, Robot robot) {
 		super();
 		this.x = x;
@@ -23,7 +27,7 @@ public class Explorer {
 		this.grids = grids;
 		this.robot = robot;
         exploredRoutes = new ArrayList<>();
-		
+		steps = 0;
 		for (int i=0;i<3;i++)
 			for (int j=0;j<3;j++) {
 				grids[i+17][j].setStart();
@@ -62,6 +66,22 @@ public class Explorer {
 	public void setY(int y) {
 		this.y = y;
 	}
+	
+	public int getTimePerStep() {
+		return timePerStep;
+	}
+	
+	public void setTimePerStep(int timePerStep) {
+		this.timePerStep = timePerStep;
+	}
+	
+	public int getTimeLimit() {
+		return timeLimit;
+	}
+
+	public void setTimeLimit(int timeLimit) {
+		this.timeLimit = timeLimit;
+	}
 
 	private boolean halfCheck() {
 		if ((x>=12)&&(y<=2))
@@ -77,13 +97,16 @@ public class Explorer {
 		return true;
 	}
 	
-	private void moveForwardRobot(int dis, int dir) {
+	private void moveForwardRobot(int dis, int dir) throws InterruptedException {
 		//add robot control things here
 		try {
-			Thread.sleep(1000);
+			Thread.sleep(timePerStep);
 		} catch (InterruptedException e) {
 			e.printStackTrace();
 		}
+		
+				
+			
 		robot.moveForward(dis, dir);
 		robot.setVisible(true);
 		if (halfCheck()&&(!half))
@@ -91,9 +114,22 @@ public class Explorer {
 		x = robot.getX();
 		y = robot.getY();
 		exploredRoutes.add(new PathNode(x, y, currentDir));
-		/*System.out.println("---------------------------------------------------");
+		
+		if ((steps*timePerStep)>=timeLimit)
+			backToHomeStart();
+			
+		return;
+	}
+	
+	private void backToHomeStart() {
+		AStar astar = new AStar(grids, robot);
+		//astar.start();
+	}
+
+	public void printMap() {
+		System.out.println("---------------------------------------------------");
 		System.out.println(robot.getRightDis());
-		System.out.printf("x:%2d  |  y:%2d  |  dir:%3d\n", x, y, dir*90);
+		System.out.printf("x:%2d  |  y:%2d  |  dir:%3d\n", x, y, currentDir*90);
 		grids[y][x].setRobot();
 		for (int i=0;i<20;i++) {
 			for (int j=0;j<15;j++) {
@@ -104,12 +140,11 @@ public class Explorer {
 				else if (grids[i][j].isWall())
 					System.out.printf("%3d",1);	
 				else if (grids[i][j].isRobot()) 
-					drawRobot(dir*90);
+					drawRobot(currentDir*90);
 			}
 			System.out.println();
 		}
-		grids[y][x].setFreeSpace();*/
-		return;
+		grids[y][x].setFreeSpace();
 	}
 	
 	public void drawRobot(int dir) {
@@ -394,17 +429,16 @@ public class Explorer {
 		return ("Running Time: "+preMinute+":"+preSecond+":"+preMillSec);
 	}
 
-	public Timer timer = new Timer();
+	/*public Timer timer = new Timer();
 	TimerTask timeLimit = new TimerTask() {			
 		@Override
 		public void run() {
-			// TODO Auto-generated method stub
 			System.out.println("Time's up.");
 			timer.cancel();
 			System.exit(0);
 			//add go back algo
 		}
-	};
+	};*/
 	TimerTask timeDisplay = new TimerTask(){
 		public void run() {
 			preMinute = c.get(Calendar.MINUTE) - startMinute;
@@ -414,12 +448,11 @@ public class Explorer {
 		}
 	};
 	
- 	public void explore() {
+ 	public void explore() throws InterruptedException {
  		exploredRoutes.clear();
 		boolean needleft = false;
 		int nextDir = currentDir/90;
-		System.out.println(nextDir);
-		System.out.printf("x:%2d  |  y:%2d  |  dir:%3d\n", x, y, currentDir);
+		//System.out.printf("x:%2d  |  y:%2d  |  dir:%3d\n", x, y, currentDir);
 		
 		startMinute = c.get(Calendar.MINUTE);
 		startSecond = c.get(Calendar.SECOND);
