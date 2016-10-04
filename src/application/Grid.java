@@ -117,6 +117,8 @@ public class Grid extends Label {
 			case START:
 				setBackground(BG_START);
 				break;
+			default:
+				break;
 		}
 	}
 	

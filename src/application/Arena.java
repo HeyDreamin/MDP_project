@@ -82,22 +82,20 @@ public class Arena extends AnchorPane implements EventHandler<Event> {
 		    		grids[row][col].setStart();
 		    	else if ((row<3)&&(col>11))
 		    		grids[row][col].setGoal();
-		    	System.out.printf("%3d",tempChar-48);
-	    		col++;
+		    	col++;
 	    		if (col==15) {
-		    		System.out.println();
 		    		row--;
 		    		col = 0;
 		    	}
 		    }
-		    System.out.println();
 		} catch (FileNotFoundException e) {
 			e.printStackTrace();
 		}
 	}
 	
 	public void loadMap(String mdf) {
-		int i, index = 1;
+		int i;
+		int index = 1;
 		String[] bin = mdf.split("");
 		
 		for (int row = 0; row < 20; row++) {
@@ -113,32 +111,33 @@ public class Arena extends AnchorPane implements EventHandler<Event> {
 	}
 	
 	public String generateMapDescriptor() {
-		StringBuilder sb = new StringBuilder();
-		
-		for (int row = 0; row < 20; row++) {
+		StringBuilder sb = new StringBuilder();		
+		for (int row = 19; row >= 0; row--) {
 	    	for (int col = 0; col < 15; col++) {
 	    	
 			    if (grids[row][col].isFreeSpace()) {
 			    	sb.append(0);
 			    } else {
 			    	sb.append(1);
-			    }
-			    
+			    }			    
 		    }
 	    	
 //	    	verify the map descriptor
 //	    	sb.append("\n");
-	    }
-		
+	    }		
 		return sb.toString();
 	}
 	
-	public String encodeMapDescriptor() {
+	public String encodeMapDescriptor(int choice) {
 		int index = 0;
-
-		String md = generateMapDescriptor();		
-		StringBuilder sb = new StringBuilder();
-		
+		String md = null;
+		if (choice==1) {
+			md = getBinaryDesP1();
+		}
+		else if (choice==2) {
+			md = getBinaryDesP2();
+		}			
+		StringBuilder sb = new StringBuilder();		
 		
 		while (index < md.length()) {
 			sb.append(binaryToHex(md.substring(index, Math.min(index + 4, md.length()))));
@@ -178,6 +177,32 @@ public class Arena extends AnchorPane implements EventHandler<Event> {
         
         return hex;
     }
+	
+	public String getBinaryDesP1() {
+		String desP1 = "11";
+		for (int row = 19; row >= 0; row--) {
+	    	for (int col = 0; col < 15; col++) {
+	    		if (grids[row][col].isUnknown())
+	    			desP1 += "0";
+	    		else
+	    			desP1 += "1";
+		    }
+	    }
+		return desP1+"11";
+	}
+	
+	public String getBinaryDesP2() {
+		String desP2 = "";
+		for (int row = 19; row >= 0; row--) {
+	    	for (int col = 0; col < 15; col++) {
+	    		if (grids[row][col].isFreeSpace())
+	    			desP2 += "0";
+	    		else if (grids[row][col].isWall())
+	    			desP2 += "1";
+		    }
+	    }
+		return desP2;
+	}
 
 	private void selectCoordinateHover(int row, int col) {
 		if ((0 < row && row < 19) && (0 < col  && col < 14)) {
@@ -223,7 +248,6 @@ public class Arena extends AnchorPane implements EventHandler<Event> {
 	
 	@Override
 	public void handle(Event event) {
-		// TODO Auto-generated method stub
 		String evt = event.getEventType().getName();
 		Grid grid = (Grid) event.getSource();
 
@@ -256,5 +280,11 @@ public class Arena extends AnchorPane implements EventHandler<Event> {
 				}
 			} 
 		}		
+	}
+
+	public void resetMap() {
+		for (int row = 19; row >= 0; row--)
+	    	for (int col = 0; col < 15; col++)
+	    		grids[row][col].setFreeSpace();
 	}
 }

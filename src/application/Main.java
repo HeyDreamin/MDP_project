@@ -47,10 +47,11 @@ public class Main extends Application implements EventHandler<Event> {
 		    Group root = new Group();
 		    Scene scene = new Scene(root);
 
-		    BorderPane bp = new BorderPane();
-		   
+		    BorderPane bp = new BorderPane();		    
 		    arena = new Arena();
-		    result = new Arena();		    
+		    arena.resetMap();
+		    result = new Arena();
+		    
 		    bp.setLeft(arena);
 		    bp.setRight(result);
 		    
@@ -127,8 +128,7 @@ public class Main extends Application implements EventHandler<Event> {
 	public int preMinute;
 	public int preSecond;
 	public int preMillSec;
-	
-	
+		
 	@Override
 	public void handle(Event event) {
 		String evt = event.getEventType().getName();
@@ -164,7 +164,9 @@ public class Main extends Application implements EventHandler<Event> {
 					if (file != null) {
 						try {
 							FileWriter fw = new FileWriter(file,false);
-							fw.write(arena.encodeMapDescriptor());
+							fw.write(arena.encodeMapDescriptor(1));
+							fw.write("\n");
+							fw.write(arena.encodeMapDescriptor(2));
 							fw.close();
 
 						} catch (IOException e) {
@@ -184,6 +186,7 @@ public class Main extends Application implements EventHandler<Event> {
 					startMillSec = c.get(Calendar.MILLISECOND);
 					//timer.scheduleAtFixedRate(timeDisplay, 0, 200);
 					//timer.schedule(timeLimit, 3000);
+					
 					Thread th = new Thread(new Runnable() {						
 						@Override
 						public void run() {
@@ -192,29 +195,19 @@ public class Main extends Application implements EventHandler<Event> {
 							} catch (InterruptedException e) {
 								e.printStackTrace();
 							}
-							/*for (int i=0;i<20;i++) {
-								for (int j=0;j<15;j++) {
-									if (result.grids[i][j].isFreeSpace())
-										System.out.printf("%3d",0);
-									else if (result.grids[i][j].isUnknown())
-										System.out.printf("%3s", "*");
-									else if (result.grids[i][j].isWall())
-										System.out.printf("%3d",1);				
-								}
-								System.out.println();
-							}*/
 						}
 					});
 					
 					th.setDaemon(true);
 					th.start();
+					
 					break;
 				case "btn_fastest_path":
-					AStar astar = new AStar(arena);
+					AStar astar = new AStar(result.grids, result.getRobot(), 1, 18, 13, 1);
 					astar.start();
 					break;
 				case "btn_reset_map":
-					//arena.resetMap();
+					arena.resetMap();
 					break;
 			}			
 		} 

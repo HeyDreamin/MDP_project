@@ -114,7 +114,6 @@ public class Robot extends BorderPane {
 	public void setX(int x) {
 		this.x = x;
 		setLayoutX((x-1)*30);
-
 	}
 
 	public int getY() {
@@ -334,7 +333,7 @@ public class Robot extends BorderPane {
 				break;
 		}
 		updatePosition(x, y);
-		Thread.sleep(500);	
+		Thread.sleep(50);
 	}
 	
 	public void turnLeft() throws InterruptedException {
@@ -360,7 +359,6 @@ public class Robot extends BorderPane {
 
 	public boolean checkLeft() throws InterruptedException
 	{
-		boolean maybe = false;
 		getLeftData();
 		if (leftDis>0)
 		{
@@ -370,38 +368,8 @@ public class Robot extends BorderPane {
 			else {
 				return false;
 			}
-			/*switch(direction)
-			{
-				case 0:
-					if (originMap[y + 1][x - 2].isFreeSpace())
-						maybe = true;
-					break;
-				
-				case 90:
-					if (originMap[y - 2][x - 1].isFreeSpace())
-						maybe = true;
-					break;
-
-				case 180:
-					if (originMap[y - 1][x + 2].isFreeSpace())
-						maybe = true;
-					break;
-
-				case 270:
-					if (originMap[y + 2][x + 1].isFreeSpace())
-						maybe = true;
-					break;
-			}
-			if (maybe)
-			{
-				direction = (direction + 270) % 360; 
-				getFrontData();
-				if (frontRightDis>0)
-				{
-					return true;
-				}
-			}*/
 		}
 		return false;
-	}	
+	}
+	
 }

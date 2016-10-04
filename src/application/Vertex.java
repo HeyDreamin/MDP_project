@@ -6,9 +6,7 @@ import java.util.LinkedHashSet;
 import java.awt.List;
 import java.util.ArrayList;
 
-public class Vertex {
-
-	
+public class Vertex {	
 	// the current route\path cost for this tile
 	private float cost;
 	private int depth;
@@ -36,7 +34,6 @@ public class Vertex {
 
 		this.heuristic = Integer.MAX_VALUE;
 	}
-
 	
 	//  @determineParentTile():
 	//	Method to determine the parent of the current tile
