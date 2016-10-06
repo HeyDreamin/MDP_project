@@ -168,14 +168,13 @@ public class Main extends Application implements EventHandler<Event> {
 							fw.write("\n");
 							fw.write(arena.encodeMapDescriptor(2));
 							fw.close();
-
 						} catch (IOException e) {
 							e.printStackTrace();
 						}
 					}
 					break;
 				case "btn_exploration":
-					result.getRobot().setMap(arena.grids);
+					//result.getRobot().setMap(arena.grids);
 					explorer = new Explorer(1, 18, 0, result.grids, result.getRobot());
 					
 					//add GUI set time limit
@@ -191,6 +190,7 @@ public class Main extends Application implements EventHandler<Event> {
 						@Override
 						public void run() {
 							try {
+								System.out.println("thread running");
 								explorer.explore();
 							} catch (InterruptedException e) {
 								e.printStackTrace();
@@ -203,6 +203,12 @@ public class Main extends Application implements EventHandler<Event> {
 					
 					break;
 				case "btn_fastest_path":
+				try {
+					result.getRobot().setDirection(0);
+				} catch (InterruptedException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
 					AStar astar = new AStar(result.grids, result.getRobot(), 1, 18, 13, 1);
 					astar.start();
 					break;

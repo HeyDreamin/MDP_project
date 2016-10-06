@@ -17,7 +17,7 @@ public class Arena extends AnchorPane implements EventHandler<Event> {
 	private Robot robot;
 	private GridPane arena;
 	private boolean changeCoordinate;
-	
+		
 	public Arena() {
 		super();
 

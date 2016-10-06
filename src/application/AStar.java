@@ -84,6 +84,22 @@ public class AStar {
                 vertex[row][col] = v;
             }
         }
+        
+
+
+        for (int row = 0; row < 20; row++) {
+            for (int col = 0; col < 15; col++) {
+                
+
+                if (vertex[row][col] == null) {
+                    System.out.print("0");
+                } else {
+                    System.out.print("1");
+//                    System.out.print(v.getHeuristic()+"\t");
+                }
+            }
+            System.out.print("\n");
+        }
     }
     
     public boolean checkStatus(Grid.Status status) {
@@ -107,6 +123,9 @@ public class AStar {
     public void compute(int fromX, int fromY, int toX, int toY) {
         reset();
 
+        System.out.println(fromY+" / "+fromX);
+        System.out.println(toY+" / "+toX);
+        
         Vertex source = vertex[fromY][fromX];
         Vertex target = vertex[toY][toX];
 
@@ -284,7 +303,7 @@ public class AStar {
         ArrayList<Vertex> shortestPath = new ArrayList<>();
 
         Vertex cur = target;
-
+        
         while (!cur.equals(source)) {
             shortestPath.add(cur);
             cur = cur.getParent();
@@ -317,10 +336,10 @@ public class AStar {
                 case 180: // facing south
                     robot.turnLeft();
                     break;
-                case 270: // facing west
+                /*case 270: // facing west
                     robot.turnLeft();
                     robot.turnLeft();
-                    break;
+                    break;*/
             }
         }
         //robot moving towards West
@@ -329,10 +348,10 @@ public class AStar {
                 case 0:   // facing north
                     robot.turnLeft();
                     break;
-                case 90: // facing east
+                /*case 90: // facing east
                     robot.turnLeft();
                     robot.turnLeft();
-                    break;
+                    break;*/
                 case 180: // facing south
                     robot.turnRight();
                     break;
@@ -343,11 +362,11 @@ public class AStar {
             switch(direction) {
                 case 90: // facing east
                     robot.turnLeft();
-                    break;
+                    break;/*
                 case 180: // facing south
                     robot.turnRight();
                     robot.turnRight();
-                    break;
+                    break;*/
                 case 270:   // facing west
                     robot.turnRight();
                     break;
@@ -355,11 +374,11 @@ public class AStar {
         }
         //robot moving towards South
         if(cur.getY() < neighbor.getY()){
-            switch(direction) {
+            switch(direction) {/*
                 case 0:   // facing north
                     robot.turnLeft();
                     robot.turnLeft();
-                    break;
+                    break;*/
                 case 90: // facing east
                     robot.turnRight();
                     break;
@@ -369,7 +388,7 @@ public class AStar {
             }
         }
 
-        robot.moveForward(1, direction);
+        robot.moveForward(1, robot.getDirection());
     }
 
     public void start() {
@@ -380,6 +399,7 @@ public class AStar {
                 arenaSimulation(startX, startY);
             }
         });
+        th.setName("123");
         th.setDaemon(true);
         th.start();
     }

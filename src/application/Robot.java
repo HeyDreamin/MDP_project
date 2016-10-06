@@ -7,16 +7,24 @@ import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.Reader;
 
+import communication.CommManager;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.Background;
 import javafx.scene.layout.BackgroundFill;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.paint.Color;
 
+/*Command:	AW:move forward
+ *			AA:turn left
+ *			AD:turn right
+*/
+
 public class Robot extends BorderPane {
 	public enum Direction {
 		NORTH, EAST, SOUTH, WEST
 	}
+	private static final int SHORTRANGE = 3;
+	private static final int LONGRANGE = 5;
 
 	// Background color that the robot cover
     private Color c = new Color(0.7, 0.3, 0.4, 0.2);
@@ -29,11 +37,14 @@ public class Robot extends BorderPane {
 	private int frontLeftDis;
 	private int frontStraDis;
 	private int frontRightDis;
-	private int leftDis;
+	private int leftFrontDis;
+	private int leftBackDis;
 	private int rightDis;
+	private int[] sensorData;
 	private Grid[][] originMap;
 	private boolean done = false;
 	private ImageView robot;
+	private CommManager commMgr;
 	
 	public Robot(int x, int y, int dir, Grid[][] map) {
 		super();
@@ -50,11 +61,32 @@ public class Robot extends BorderPane {
 	    robot.setFitHeight(70);
 	    robot.setFitWidth(70);
 	    this.originMap = map;
+	    /*commMgr = new CommManager();
+	    commMgr.writeRPI("AW");
+	    commMgr.writeRPI("AA");
+	    */
+	    sensorData = new int[6];
 	    
 	    setCenter(robot);
 	    setVisible(false);
 	}
 	
+	public CommManager getCommMgr() {
+		return commMgr;
+	}
+
+	public void setCommMgr(CommManager commMgr) {
+		this.commMgr = commMgr;
+	}
+
+	public int[] getSensorData() {
+		return sensorData;
+	}
+
+	public void setSensorData(int[] sensorData) {
+		this.sensorData = sensorData;
+	}
+
 	public void setMap(Grid[][] map) {
 		originMap = map;
 	}
@@ -83,12 +115,20 @@ public class Robot extends BorderPane {
 		this.frontRightDis = frontRightDis;
 	}
 
-	public int getLeftDis() {
-		return leftDis;
+	public int getLeftFrontDis() {
+		return leftFrontDis;
 	}
 
-	public void setLeftDis(int leftDis) {
-		this.leftDis = leftDis;
+	public void setLeftFrontDis(int leftFrontDis) {
+		this.leftFrontDis = leftFrontDis;
+	}
+	
+	public int getLeftBackDis() {
+		return leftBackDis;
+	}
+
+	public void setLeftBackDis(int leftBackDis) {
+		this.leftBackDis = leftBackDis;
 	}
 
 	public int getRightDis() {
@@ -128,11 +168,13 @@ public class Robot extends BorderPane {
 	public int getDirection() {
 		return direction;
 	}
+	
+	//communication !!!
 
 	public void setDirection(int direction) throws InterruptedException {
 		this.direction = direction;
 		robot.setRotate(direction);
-		Thread.sleep(500);
+		Thread.sleep(100);
 	}
 	
 	public void getFrontData()
@@ -142,7 +184,7 @@ public class Robot extends BorderPane {
 		dis = 0;
 		for (i = 0; i < 3; i++)
 		{
-			for (j = 0; j < 5; j++)
+			for (j = 0; j < SHORTRANGE; j++)
 			{
 				switch (direction)
 				{
@@ -181,6 +223,8 @@ public class Robot extends BorderPane {
 					default:
 						break;
 				}
+				if (reach_wall)
+					break;
 			}
 			switch (i)
 			{
@@ -207,12 +251,14 @@ public class Robot extends BorderPane {
 		int j, dis;
 		boolean reach_wall = false;
 		dis = 0;
-		for (j = 0; j < 5; j++)
-			{
+		for (int i=-1;i<2;i++) {
+			if (i==0)
+				continue;
+			for (j = 0; j < SHORTRANGE; j++) {
 				switch (direction)
 				{
 					case 0:
-						if ((x - 2 - j >= 0)&&(originMap[y][x - 2 - j].isFreeSpace())&&(!reach_wall))
+						if ((x - 2 - j >= 0)&&(originMap[y + i][x - 2 - j].isFreeSpace())&&(!reach_wall))
 						{
 							dis++;
 						}
@@ -220,7 +266,7 @@ public class Robot extends BorderPane {
 							reach_wall = true;
 						break;
 					case 90:
-						if ((y - 2 - j >= 0)&&(originMap[y - 2 - j][x].isFreeSpace())&&(!reach_wall))
+						if ((y - 2 - j >= 0)&&(originMap[y - 2 - j][x - i].isFreeSpace())&&(!reach_wall))
 						{
 							dis++;
 						}
@@ -228,7 +274,7 @@ public class Robot extends BorderPane {
 							reach_wall = true;
 						break;
 					case 180:
-						if ((x + 2 + j <= 14)&&(originMap[y][x + 2 + j].isFreeSpace())&&(!reach_wall))
+						if ((x + 2 + j <= 14)&&(originMap[y - i][x + 2 + j].isFreeSpace())&&(!reach_wall))
 						{
 							dis++;
 						}
@@ -236,7 +282,7 @@ public class Robot extends BorderPane {
 							reach_wall = true;
 						break;
 					case 270:
-						if ((y + 2 + j <= 19)&&(originMap[y + 2 + j][x].isFreeSpace())&&(!reach_wall))
+						if ((y + 2 + j <= 19)&&(originMap[y + 2 + j][x + i].isFreeSpace())&&(!reach_wall))
 						{
 							dis++;
 						}
@@ -246,8 +292,16 @@ public class Robot extends BorderPane {
 					default:
 						break;
 				}
+				if (reach_wall)
+					break;				
 			}
-		setLeftDis(dis);
+			if (i==-1)
+				setLeftFrontDis(dis);
+			else if (i==1)
+				setLeftBackDis(dis);
+			dis = 0;
+			reach_wall = false;
+		}
 		return;
 	}
 
@@ -256,7 +310,7 @@ public class Robot extends BorderPane {
 		int j, dis;
 		boolean reach_wall = false;
 		dis = 0;
-		for (j = 0; j < 8; j++)
+		for (j = 0; j < LONGRANGE; j++)
 		{
 			switch (direction)
 			{
@@ -303,6 +357,15 @@ public class Robot extends BorderPane {
 
 	public void getData()
 	{
+		//System.out.println("ready to write."); 
+		//commMgr.writeRPI("AG");//get data command
+		//System.out.println("Sent.");
+		//String[] data = commMgr.readRPI().split("");
+		for (int i=0;i<6;i++) {
+			//sensorData[i] = Integer.parseInt(data[i]);
+		}
+		//setLeftDis();
+		//set...
 		getLeftData();
 		getFrontData();
 		getRightData();
@@ -311,10 +374,11 @@ public class Robot extends BorderPane {
 	
 	public void moveForward(int dis, int dir) throws InterruptedException
 	{
+		//commMgr.writeRPI("AW");
 		switch (dir)
 		{
 			case 0:
-				y -= dis;				
+				y -= dis;			
 				break;
 
 			case 1:
@@ -333,14 +397,19 @@ public class Robot extends BorderPane {
 				break;
 		}
 		updatePosition(x, y);
-		Thread.sleep(50);
+		Thread.sleep(100);
 	}
 	
 	public void turnLeft() throws InterruptedException {
+		//commMgr.writeRPI("AA");
 		setDirection((direction+270)%360);
+		//CommMgr.getCommMgr().setConnection(1000);
+		//CommMgr.getCommMgr().sendMsg("", "w")
+		;
 	}
 	
 	public void turnRight() throws InterruptedException {
+		//commMgr.writeRPI("AD");
 		setDirection((direction+90)%360);
 	}
 	
@@ -360,7 +429,7 @@ public class Robot extends BorderPane {
 	public boolean checkLeft() throws InterruptedException
 	{
 		getLeftData();
-		if (leftDis>0)
+		if (leftFrontDis>0)
 		{
 			turnLeft();
 			if (checkFront())

@@ -3,9 +3,11 @@ import java.io.IOException;
 import java.text.SimpleDateFormat;
 import java.util.*;
 
+import communication.CommManager;
+
 public class Explorer {
-	private static final int SHORTRANGE = 5;
-	private static final int LONGRANGE = 8;
+	private static final int SHORTRANGE = 3;
+	private static final int LONGRANGE = 5;
 	private int currentDir;//0 90 180 270 360
 	private int x;
 	private int y;
@@ -20,6 +22,7 @@ public class Explorer {
 	private int steps;
 	private float coverage;
 	private float coverageLimit;
+	private CommManager cmMgr;
 	
 	public Explorer(int x, int y, int currentDir, Grid[][] grids, Robot robot) {
 		super();
@@ -127,7 +130,7 @@ public class Explorer {
 	private void moveForwardRobot(int dis, int dir) throws InterruptedException {
 		//add robot control things here
 		try {
-			Thread.sleep(50);
+			Thread.sleep(100);
 		} catch (InterruptedException e) {
 			e.printStackTrace();
 		}
@@ -140,22 +143,26 @@ public class Explorer {
 		y = robot.getY();
 		exploredRoutes.add(new PathNode(x, y, currentDir));
 		
-		steps++;
-		checkTimeCoverageLimit();
 			
 		return;
 	}
 	
-	private void checkTimeCoverageLimit() {
-		if (steps*timePerStep>=timeLimit)
-			backToHomeStart();
-		if (((coverage + 9) / 300) > coverageLimit)
-			backToHomeStart();
+	private boolean checkTimeCoverageLimit() {
+		/*if (steps*timePerStep>=10000) {
+			return true;
+			
+		}
+		if (((coverage + 9) / 300) > 0.5) {
+			return true;
+		}*/
+		return false;
 	}
 
-	private void backToHomeStart() {
-		//AStar astar = new AStar(grids, robot);
-		//astar.start();
+	private void backToHome() {
+		System.out.println("From explore1: "+robot.getY()+" / "+robot.getX());
+		AStar astar = new AStar(grids, robot, robot.getX(), robot.getY(), 1, 18);
+		astar.start();
+		System.out.println("From explore2: "+robot.getY()+" / "+robot.getX());
 	}
 
 	public void printMap() {
@@ -309,54 +316,79 @@ public class Explorer {
 	private void drawLeft(int dir)
 	{
 		int i;
-		int leftDis = robot.getLeftDis();
-		switch (dir)
+		int leftFrontDis = robot.getLeftFrontDis();
+		int leftBackDis = robot.getLeftBackDis();
+		switch (dir/90)
 		{
 			case 0:
 				if (x > 1)
 				{
-					for (i = 0; i < leftDis; i++)
+					for (i = 0; i < leftFrontDis; i++)
 					{
-						drawFreeSpace(grids[y][x - 2 - i]);
+						drawFreeSpace(grids[y - 1][x - 2 - i]);
 					}
-					if ((x - 2 - leftDis >= 0)&&(leftDis < SHORTRANGE))
-						drawWall(grids[y][x - 2 - leftDis]);
+					if ((x - 2 - leftFrontDis >= 0)&&(leftFrontDis < SHORTRANGE))
+						drawWall(grids[y - 1][x - 2 - leftFrontDis]);
+					for (i = 0; i < leftBackDis; i++)
+					{
+						drawFreeSpace(grids[y + 1][x - 2 - i]);
+					}
+					if ((x - 2 - leftBackDis >= 0)&&(leftBackDis < SHORTRANGE))
+						drawWall(grids[y + 1][x - 2 - leftBackDis]);
 				}
 				break;
 				
 			case 1:
 				if (y < 18)
 				{
-					for (i = 0; i < leftDis; i++)
+					for (i = 0; i < leftFrontDis; i++)
 					{
-						drawFreeSpace(grids[y - 2 - i][x]);
+						drawFreeSpace(grids[y - 2 - i][x + 1]);
 					}
-					if ((y - 2 - leftDis >= 0)&&(leftDis < SHORTRANGE))
-						drawWall(grids[y - 2 - leftDis][x]);
+					if ((y - 2 - leftFrontDis >= 0)&&(leftFrontDis < SHORTRANGE))
+						drawWall(grids[y - 2 - leftFrontDis][x + 1]);
+					for (i = 0; i < leftBackDis; i++)
+					{
+						drawFreeSpace(grids[y - 2 - i][x - 1]);
+					}
+					if ((y - 2 - leftBackDis >= 0)&&(leftBackDis < SHORTRANGE))
+						drawWall(grids[y - 2 - leftBackDis][x - 1]);
 				}
 				break;
 
 			case 2:
 				if (x < 13)
 				{
-					for (i = 0; i < leftDis; i++)
+					for (i = 0; i < leftFrontDis; i++)
 					{
-						drawFreeSpace(grids[y][x + 2 + i]);
+						drawFreeSpace(grids[y + 1][x + 2 + i]);
 					}
-					if ((x + 2 + leftDis <= 14)&&(leftDis < SHORTRANGE))
-						drawWall(grids[y][x + 2 + leftDis]);
+					if ((x + 2 + leftFrontDis <= 14)&&(leftFrontDis < SHORTRANGE))
+						drawWall(grids[y + 1][x + 2 + leftFrontDis]);
+					for (i = 0; i < leftBackDis; i++)
+					{
+						drawFreeSpace(grids[y - 1][x + 2 + i]);
+					}
+					if ((x + 2 + leftBackDis <= 14)&&(leftBackDis < SHORTRANGE))
+						drawWall(grids[y - 1][x + 2 + leftBackDis]);
 				}
 				break;
 
 			case 3:
 				if (y > 1)
 				{
-					for (i = 0; i < leftDis; i++)
+					for (i = 0; i < leftFrontDis; i++)
 					{
-						drawFreeSpace(grids[y + 2 + i][x]);
+						drawFreeSpace(grids[y + 2 + i][x - 1]);
 					}
-					if ((y + 2 + leftDis <= 19)&&(leftDis < SHORTRANGE))
-						drawWall(grids[y + 2 + leftDis][x]);
+					if ((y + 2 + leftFrontDis <= 19)&&(leftFrontDis < SHORTRANGE))
+						drawWall(grids[y + 2 + leftFrontDis][x - 1]);
+					for (i = 0; i < leftBackDis; i++)
+					{
+						drawFreeSpace(grids[y + 2 + i][x + 1]);
+					}
+					if ((y + 2 + leftBackDis <= 19)&&(leftBackDis < SHORTRANGE))
+						drawWall(grids[y + 2 + leftBackDis][x + 1]);
 				}
 				break;
 		}
@@ -517,16 +549,17 @@ public class Explorer {
  		exploredRoutes.clear();
 		boolean needLeft = false;
 		boolean needRight = false;
-		//System.out.printf("x:%2d  |  y:%2d  |  dir:%3d\n", x, y, currentDir);
+		//System.out.printf("x:%2d  |  y:%2d  |  dir:%3d\n", robot.getX(), robot.getY(), currentDir);
 		
 		currentDir = 0;
 		robot.setDirection(0);
-		robot.setVisible(true);
-		robot.getFrontData();
+		
+		//robot.setVisible(true);
+		//robot.getCommMgr().writeRPI("Hello.");
+		
+		robot.getData();
 		drawFront(0);
-		robot.getLeftData();
 		drawLeft(0);
-		robot.getRightData();
 		drawRight(0);
 		
 		while (!done) {
@@ -569,6 +602,11 @@ public class Explorer {
 				drawLeft(currentDir);
 				robot.getRightData();
 				drawRight(currentDir);
+				steps++;
+				if (checkTimeCoverageLimit()) {
+					//backToHome();
+					return;
+				}				
 				if (checkRobotLeft()) {
 					robot.getFrontData();
 					drawFront(robot.getDirection());
@@ -588,6 +626,7 @@ public class Explorer {
 			}
 		}
 		outputMapDescription();
+		//robot.getCommMgr().disconnect();
 	}
 
 }
