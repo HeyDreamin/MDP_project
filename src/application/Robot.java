@@ -172,9 +172,9 @@ public class Robot extends BorderPane {
 	//communication !!!
 
 	public void setDirection(int direction) throws InterruptedException {
+		Thread.sleep(200);
 		this.direction = direction;
 		robot.setRotate(direction);
-		Thread.sleep(100);
 	}
 	
 	public void getFrontData()
@@ -357,13 +357,13 @@ public class Robot extends BorderPane {
 
 	public void getData()
 	{
-		//System.out.println("ready to write."); 
-		//commMgr.writeRPI("AG");//get data command
-		//System.out.println("Sent.");
-		//String[] data = commMgr.readRPI().split("");
+		/*System.out.println("ready to write."); 
+		commMgr.writeRPI("AG");//get data command
+		System.out.println("Sent.");
+		String[] data = commMgr.readRPI().split("");
 		for (int i=0;i<6;i++) {
-			//sensorData[i] = Integer.parseInt(data[i]);
-		}
+			sensorData[i] = Integer.parseInt(data[i]);
+		}*/
 		//setLeftDis();
 		//set...
 		getLeftData();

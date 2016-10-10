@@ -14,14 +14,13 @@ public class Explorer {
 	private boolean done = false, half = false;
 	private Grid[][] grids;
 	private Robot robot;
-	private boolean warden = false;
 	private List<PathNode> exploredRoutes;
 	
 	private int timePerStep;
 	private int timeLimit;
 	private int steps;
-	private float coverage;
-	private float coverageLimit;
+	private int coverage;
+	private int coverageLimit;
 	private CommManager cmMgr;
 	
 	public Explorer(int x, int y, int currentDir, Grid[][] grids, Robot robot) {
@@ -31,7 +30,8 @@ public class Explorer {
 		this.currentDir = currentDir;
 		this.grids = grids;
 		this.robot = robot;
-        exploredRoutes = new ArrayList<>();
+		robot.updatePosition(x, y);
+		exploredRoutes = new ArrayList<>();
 		setSteps(0);
 		setCoverage(0);
 		for (int i=0;i<3;i++)
@@ -41,7 +41,7 @@ public class Explorer {
 			}
 	}	
 
-	public float getCoverageLimit() {
+	public int getCoverageLimit() {
 		return coverageLimit;
 	}
 	
@@ -49,7 +49,7 @@ public class Explorer {
 		this.coverageLimit = coverageLimit;
 	}
 	
-	public float getCoverage() {
+	public int getCoverage() {
 		return coverage;
 	}
 	
@@ -130,7 +130,7 @@ public class Explorer {
 	private void moveForwardRobot(int dis, int dir) throws InterruptedException {
 		//add robot control things here
 		try {
-			Thread.sleep(100);
+			Thread.sleep(timePerStep);
 		} catch (InterruptedException e) {
 			e.printStackTrace();
 		}
@@ -142,19 +142,23 @@ public class Explorer {
 		x = robot.getX();
 		y = robot.getY();
 		exploredRoutes.add(new PathNode(x, y, currentDir));
-		
 			
 		return;
 	}
 	
 	private boolean checkTimeCoverageLimit() {
-		/*if (steps*timePerStep>=10000) {
+		double temp =  coverage / 2.82;
+		System.out.printf("Step No%3d  x:%2d  |  y:%2d  |  dir:%3d  | cover:%.2f%s\n",
+				steps, robot.getX(), robot.getY(), currentDir, temp, "%");
+		if (steps*timePerStep>=timeLimit) {
+			System.out.println("Time out. Terminate.");
 			return true;
 			
 		}
-		if (((coverage + 9) / 300) > 0.5) {
+		if ((coverage / 2.82) > coverageLimit) {
+			System.out.println("Coverage reached. Terminate.");
 			return true;
-		}*/
+		}
 		return false;
 	}
 
@@ -470,62 +474,7 @@ public class Explorer {
 	public List<PathNode> getExploredRoutes() {
         return exploredRoutes;
     }
-	
-	Calendar c = Calendar.getInstance();
-	public int startMinute; 
-	public int startSecond;
-	public int startMillSec;
-	public int preMinute;
-	public int preSecond;
-	public int preMillSec;
-	
-	public int getPreMinute() {
-		return preMinute;
-	}
 
-	public void setPreMinute(int preMinute) {
-		this.preMinute = preMinute;
-	}
-
-	public int getPreSecond() {
-		return preSecond;
-	}
-
-	public void setPreSecond(int preSecond) {
-		this.preSecond = preSecond;
-	}
-
-	public int getPreMillSec() {
-		return preMillSec;
-	}
-
-	public void setPreMillSec(int preMillSec) {
-		this.preMillSec = preMillSec;
-	}
-	
-	public String getRunningTime() {
-		return ("Running Time: "+preMinute+":"+preSecond+":"+preMillSec);
-	}
-
-	/*public Timer timer = new Timer();
-	TimerTask timeLimit = new TimerTask() {			
-		@Override
-		public void run() {
-			System.out.println("Time's up.");
-			timer.cancel();
-			System.exit(0);
-			//add go back algo
-		}
-	};*/
-	TimerTask timeDisplay = new TimerTask(){
-		public void run() {
-			preMinute = c.get(Calendar.MINUTE) - startMinute;
-			preSecond = c.get(Calendar.SECOND) - startSecond;
-			preMillSec = c.get(Calendar.MILLISECOND) - startMillSec;
-			System.out.printf("Running Time: 0%d:%d:%d\n",preMinute,preSecond,preMillSec);			
-		}
-	};
-	
 	private boolean checkDone() {
 		if ((half)&&(!notStart())) {
 			System.out.println("Exploration Done.");
@@ -553,15 +502,14 @@ public class Explorer {
 		
 		currentDir = 0;
 		robot.setDirection(0);
-		
-		//robot.setVisible(true);
+		robot.setVisible(true);
 		//robot.getCommMgr().writeRPI("Hello.");
 		
 		robot.getData();
 		drawFront(0);
 		drawLeft(0);
 		drawRight(0);
-		
+		System.out.printf("Time limit:%d \nCover Limit:%d \nSpeed:%d\n",getTimeLimit(),getCoverageLimit(),getTimePerStep());
 		while (!done) {
 			if (checkDone())
 				return;
@@ -576,9 +524,11 @@ public class Explorer {
 					needLeft = false;
 				else {
 					if (checkRobotLeft()) {
-						steps++;
+						steps++;					
 						robot.getFrontData();
 						drawFront(robot.getDirection());
+						if (checkTimeCoverageLimit())
+							return;	
 						needLeft = true;
 						continue;
 					}
@@ -586,6 +536,9 @@ public class Explorer {
 						steps++;
 						robot.getFrontData();
 						drawFront(robot.getDirection());
+
+						if (checkTimeCoverageLimit())
+							return;	
 					}
 				}
 			}
@@ -622,6 +575,8 @@ public class Explorer {
 			if (!needLeft) {
 				robot.turnRight();
 				steps++;
+				if (checkTimeCoverageLimit())
+					return;	
 				needRight = true;
 			}
 		}

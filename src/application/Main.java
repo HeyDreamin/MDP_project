@@ -17,6 +17,7 @@ import javafx.scene.Group;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
+import javafx.scene.control.TextField;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.AnchorPane;
@@ -24,6 +25,7 @@ import javafx.scene.layout.Background;
 import javafx.scene.layout.BackgroundFill;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.GridPane;
+import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
 import javafx.scene.paint.Color;
 import javafx.stage.DirectoryChooser;
@@ -37,6 +39,12 @@ public class Main extends Application implements EventHandler<Event> {
 	private Stage stage;
 	private File workingDir, mapDir;
 	private Explorer explorer;
+	Label mTimer = new Label("0");
+	Label mCoverage = new Label("0%");
+	Label mSpeed = new Label("0");
+    TextField timeInput = new TextField();
+	TextField coverageInput = new TextField();
+	TextField speedInput = new TextField();
 	
 	@Override
 	public void start(Stage primaryStage) {
@@ -51,6 +59,7 @@ public class Main extends Application implements EventHandler<Event> {
 		    arena = new Arena();
 		    arena.resetMap();
 		    result = new Arena();
+		    explorer = new Explorer(1, 18, 0, result.grids, result.getRobot());
 		    
 		    bp.setLeft(arena);
 		    bp.setRight(result);
@@ -73,7 +82,11 @@ public class Main extends Application implements EventHandler<Event> {
 		    Button mSaveMap = new Button("Save Map");
 		    mSaveMap.setId("btn_save_map");
 		    mSaveMap.setOnMouseClicked(this);
-		    
+
+			Button mSaveResult = new Button("Save Result");
+			mSaveResult.setId("btn_save_result");
+			mSaveResult.setOnMouseClicked(this);
+
 		    Button mLoadMap = new Button("Load Map");
 		    mLoadMap.setId("btn_load_map");
 		    mLoadMap.setOnMouseClicked(this);
@@ -81,8 +94,34 @@ public class Main extends Application implements EventHandler<Event> {
 		    Button mResetMap = new Button("Reset Map");
 		    mResetMap.setId("btn_reset_map");
 		    mResetMap.setOnMouseClicked(this);
+
+			HBox hboxTimer = new HBox(1);
+			hboxTimer.getChildren().addAll(new Label("Time: "), mTimer);
+
+			Button mTakeTime = new Button("OK");
+		    mTakeTime.setId("btn_take_time");
+		    mTakeTime.setOnMouseClicked(this);
+			
+			HBox hboxCoverage = new HBox(1);
+			hboxCoverage.getChildren().addAll(new Label("Coverage: "), mCoverage);
+			
+			Button mTakeCover = new Button("OK");
+		    mTakeCover.setId("btn_take_cover");
+		    mTakeCover.setOnMouseClicked(this);
+			
+		    HBox hboxSpeed = new HBox(1);
+			hboxSpeed.getChildren().addAll(new Label("Time per step: "), mSpeed);
+
+			Button mTakeSpeed = new Button("OK");
+		    mTakeSpeed.setId("btn_take_speed");
+		    mTakeSpeed.setOnMouseClicked(this);
+			
 		    
-		    vbox.getChildren().addAll(mCoordinate, mExploration, mFastestPath, mSaveMap, mLoadMap, mResetMap);
+			vbox.getChildren().addAll(mCoordinate, mExploration, mFastestPath, 
+					mSaveMap, mLoadMap, mResetMap, 
+					hboxTimer, timeInput, mTakeTime, 
+					hboxCoverage, coverageInput, mTakeCover, 
+					hboxSpeed, speedInput, mTakeSpeed);
 		    bp.setCenter(vbox);
 		    
 		    root.getChildren().add(bp);
@@ -102,33 +141,7 @@ public class Main extends Application implements EventHandler<Event> {
 		launch(args);
 		return;
 	}
-	
-	public Timer timer = new Timer();
-	TimerTask timeLimit = new TimerTask() {			
-		@Override
-		public void run() {
-			System.out.println("Time's up.");
-			timer.cancel();
-			System.exit(0);
-			//add go back algo
-		}
-	};
-	TimerTask timeDisplay = new TimerTask(){
-		public void run() {
-			preMinute = c.get(Calendar.MINUTE) - startMinute;
-			preSecond = c.get(Calendar.SECOND) - startSecond;
-			preMillSec = c.get(Calendar.MILLISECOND) - startMillSec;
-			System.out.printf("Running Time: 0%d:%d:%d\n",preMinute,preSecond,preMillSec);			
-		}
-	};
-	Calendar c = Calendar.getInstance();
-	public int startMinute; 
-	public int startSecond;
-	public int startMillSec;
-	public int preMinute;
-	public int preSecond;
-	public int preMillSec;
-		
+			
 	@Override
 	public void handle(Event event) {
 		String evt = event.getEventType().getName();
@@ -164,9 +177,9 @@ public class Main extends Application implements EventHandler<Event> {
 					if (file != null) {
 						try {
 							FileWriter fw = new FileWriter(file,false);
-							fw.write(arena.encodeMapDescriptor(1));
+							fw.write(result.encodeMapDescriptor(1));
 							fw.write("\n");
-							fw.write(arena.encodeMapDescriptor(2));
+							fw.write(result.encodeMapDescriptor(2));
 							fw.close();
 						} catch (IOException e) {
 							e.printStackTrace();
@@ -174,23 +187,12 @@ public class Main extends Application implements EventHandler<Event> {
 					}
 					break;
 				case "btn_exploration":
-					//result.getRobot().setMap(arena.grids);
-					explorer = new Explorer(1, 18, 0, result.grids, result.getRobot());
-					
-					//add GUI set time limit
-					explorer.setTimePerStep(400);
-					
-					startMinute = c.get(Calendar.MINUTE);
-					startSecond = c.get(Calendar.SECOND);
-					startMillSec = c.get(Calendar.MILLISECOND);
-					//timer.scheduleAtFixedRate(timeDisplay, 0, 200);
-					//timer.schedule(timeLimit, 3000);
-					
+					result.getRobot().setMap(arena.grids);
 					Thread th = new Thread(new Runnable() {						
 						@Override
 						public void run() {
 							try {
-								System.out.println("thread running");
+								//System.out.println("thread running");
 								explorer.explore();
 							} catch (InterruptedException e) {
 								e.printStackTrace();
@@ -203,17 +205,37 @@ public class Main extends Application implements EventHandler<Event> {
 					
 					break;
 				case "btn_fastest_path":
-				try {
-					result.getRobot().setDirection(0);
-				} catch (InterruptedException e) {
-					// TODO Auto-generated catch block
-					e.printStackTrace();
-				}
+					try {
+						result.getRobot().setDirection(0);
+					} catch (InterruptedException e) {
+						e.printStackTrace();
+					}
 					AStar astar = new AStar(result.grids, result.getRobot(), 1, 18, 13, 1);
 					astar.start();
 					break;
 				case "btn_reset_map":
 					arena.resetMap();
+					break;
+				case "btn_take_time":
+					String timeStr = timeInput.getText();
+					if ((timeStr!=null)&&(!timeStr.isEmpty())) {
+						mTimer.setText(timeStr);
+						explorer.setTimeLimit(Integer.parseInt(timeStr));
+					}
+					break;
+				case "btn_take_cover":
+					String coverStr = coverageInput.getText();
+					if ((coverStr!=null)&&(!coverStr.isEmpty())) {
+						mCoverage.setText(coverStr+"%");
+						explorer.setCoverageLimit(Integer.parseInt(coverStr));
+					}
+					break;
+				case "btn_take_speed":
+					String speedStr = speedInput.getText();
+					if ((speedStr!=null)&&(!speedStr.isEmpty())) {
+						mSpeed.setText(speedStr);
+						explorer.setTimePerStep(Integer.parseInt(speedStr));
+					}
 					break;
 			}			
 		} 
