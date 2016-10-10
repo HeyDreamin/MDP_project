@@ -61,10 +61,10 @@ public class Robot extends BorderPane {
 	    robot.setFitHeight(70);
 	    robot.setFitWidth(70);
 	    this.originMap = map;
-	    /*commMgr = new CommManager();
-	    commMgr.writeRPI("AW");
-	    commMgr.writeRPI("AA");
-	    */
+	    commMgr = new CommManager();
+	    //commMgr.writeRPI("AW");
+	    //commMgr.writeRPI("AA");
+	    
 	    sensorData = new int[6];
 	    
 	    setCenter(robot);
@@ -169,8 +169,6 @@ public class Robot extends BorderPane {
 		return direction;
 	}
 	
-	//communication !!!
-
 	public void setDirection(int direction) throws InterruptedException {
 		Thread.sleep(200);
 		this.direction = direction;
@@ -357,24 +355,33 @@ public class Robot extends BorderPane {
 
 	public void getData()
 	{
-		/*System.out.println("ready to write."); 
+		System.out.println("ready to write."); 
 		commMgr.writeRPI("AG");//get data command
 		System.out.println("Sent.");
 		String[] data = commMgr.readRPI().split("");
 		for (int i=0;i<6;i++) {
 			sensorData[i] = Integer.parseInt(data[i]);
-		}*/
-		//setLeftDis();
-		//set...
+		}
+		
+
+		setFrontRightDis(sensorData[0]);
+		setFrontStraDis(sensorData[1]);
+		setFrontLeftDis(sensorData[2]);
+		setLeftFrontDis(sensorData[3]);
+		setLeftBackDis(sensorData[4]);
+		setRightDis(sensorData[5]);
+	
+		/*
 		getLeftData();
 		getFrontData();
 		getRightData();
+		*/
 		return;
 	}
 	
 	public void moveForward(int dis, int dir) throws InterruptedException
 	{
-		//commMgr.writeRPI("AW");
+		commMgr.writeRPI("AW");
 		switch (dir)
 		{
 			case 0:
@@ -401,15 +408,13 @@ public class Robot extends BorderPane {
 	}
 	
 	public void turnLeft() throws InterruptedException {
-		//commMgr.writeRPI("AA");
+		commMgr.writeRPI("AA");
 		setDirection((direction+270)%360);
-		//CommMgr.getCommMgr().setConnection(1000);
-		//CommMgr.getCommMgr().sendMsg("", "w")
 		;
 	}
 	
 	public void turnRight() throws InterruptedException {
-		//commMgr.writeRPI("AD");
+		commMgr.writeRPI("AD");
 		setDirection((direction+90)%360);
 	}
 	

@@ -192,7 +192,6 @@ public class Main extends Application implements EventHandler<Event> {
 						@Override
 						public void run() {
 							try {
-								//System.out.println("thread running");
 								explorer.explore();
 							} catch (InterruptedException e) {
 								e.printStackTrace();
