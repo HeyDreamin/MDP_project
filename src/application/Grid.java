@@ -63,6 +63,8 @@ public class Grid extends Label {
 	}
 	
 	public void setUnknown() {
+		if (status==Status.START || status==Status.GOAL)
+			return;
 		status = Status.UNKNOWN;
 		setBackground(BG_UNKNOWN);
 	}

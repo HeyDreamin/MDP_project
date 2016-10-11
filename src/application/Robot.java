@@ -45,6 +45,7 @@ public class Robot extends BorderPane {
 	private boolean done = false;
 	private ImageView robot;
 	private CommManager commMgr;
+	private boolean commOn;
 	
 	public Robot(int x, int y, int dir, Grid[][] map) {
 		super();
@@ -61,17 +62,27 @@ public class Robot extends BorderPane {
 	    robot.setFitHeight(70);
 	    robot.setFitWidth(70);
 	    this.originMap = map;
-	    commMgr = new CommManager();
-	    commMgr.writeRPI("AT");
-	    System.out.println(commMgr.readRPI());
 	    
-	    sensorData = new int[6];
+	    if (commOn) {
+	    	commMgr = new CommManager();
+		    commMgr.writeRPI("AT");
+		    System.out.println(commMgr.readRPI());
+		    sensorData = new int[6];
+		}
 	    
 	    setCenter(robot);
 	    setVisible(false);
 	}
 	
 	
+	public boolean getCommOn() {
+		return commOn;
+	}
+	
+	
+	public void setCommOn(boolean commOn) {
+		this.commOn = commOn;
+	}
 	
 	public CommManager getCommMgr() {
 		return commMgr;
@@ -80,50 +91,62 @@ public class Robot extends BorderPane {
 	public void setCommMgr(CommManager commMgr) {
 		this.commMgr = commMgr;
 	}
+	
 
 	public int[] getSensorData() {
 		return sensorData;
 	}
+	
 
 	public void setSensorData(int[] sensorData) {
 		this.sensorData = sensorData;
 	}
+	
 
 	public void setMap(Grid[][] map) {
 		originMap = map;
 	}
+	
 
 	public int getFrontLeftDis() {
 		return frontLeftDis;
 	}
+	
 
 	public void setFrontLeftDis(int frontLeftDis) {
 		this.frontLeftDis = frontLeftDis;
 	}
+	
 
 	public int getFrontStraDis() {
 		return frontStraDis;
 	}
+	
 
 	public void setFrontStraDis(int frontStraDis) {
 		this.frontStraDis = frontStraDis;
 	}
+	
 
 	public int getFrontRightDis() {
 		return frontRightDis;
 	}
+	
 
 	public void setFrontRightDis(int frontRightDis) {
 		this.frontRightDis = frontRightDis;
 	}
+	
 
 	public int getLeftFrontDis() {
 		return leftFrontDis;
 	}
+	
 
 	public void setLeftFrontDis(int leftFrontDis) {
 		this.leftFrontDis = leftFrontDis;
 	}
+	
 	
 	public int getLeftBackDis() {
 		return leftBackDis;
@@ -133,43 +156,53 @@ public class Robot extends BorderPane {
 		this.leftBackDis = leftBackDis;
 	}
 
+	
 	public int getRightDis() {
 		return rightDis;
 	}
 
+	
 	public void setRightDis(int rightDis) {
 		this.rightDis = rightDis;
 	}
 
+	
 	public boolean isDone() {
 		return done;
 	}
 
+	
 	public void setDone(boolean done) {
 		this.done = done;
 	}
 
+	
 	public int getX() {
 		return x;
 	}
 
+	
 	public void setX(int x) {
 		this.x = x;
 		setLayoutX((x-1)*30);
 	}
 
+	
 	public int getY() {
 		return y;
 	}
 
+	
 	public void setY(int y) {
 		this.y = y;
 		setLayoutY((y-1)*30);
 	}
 
+	
 	public int getDirection() {
 		return direction;
 	}
+	
 	
 	public void setDirection(int direction) throws InterruptedException {
 		Thread.sleep(200);
@@ -177,8 +210,8 @@ public class Robot extends BorderPane {
 		robot.setRotate(direction);
 	}
 	
-	public void getFrontData()
-	{
+	
+	public void getFrontData() {
 		int i,j,dis;
 		boolean reach_wall = false;
 		dis = 0;
@@ -246,8 +279,8 @@ public class Robot extends BorderPane {
 		return;
 	}
 
-	public void getLeftData()
-	{
+	
+	public void getLeftData() {
 		int j, dis;
 		boolean reach_wall = false;
 		dis = 0;
@@ -305,8 +338,8 @@ public class Robot extends BorderPane {
 		return;
 	}
 
-	public void getRightData()
-	{
+	
+	public void getRightData() {
 		int j, dis;
 		boolean reach_wall = false;
 		dis = 0;
@@ -357,45 +390,49 @@ public class Robot extends BorderPane {
 
 	public void getData() throws InterruptedException
 	{
-		System.out.println("ready to write."); 
-		commMgr.writeRPI("AG");//get data command
-		//Thread.sleep(500);
-		System.out.println("Sent.");
-		String[] data = commMgr.readRPI().split(" ");
-		for (int i=0;i<6;i++) {
-			sensorData[i] = Integer.parseInt(data[i]);
-			System.out.printf("%2d,", sensorData[i]);
-		}		
-		System.out.println();
+		if (commOn) {
+			System.out.println("ready to write."); 
+			commMgr.writeRPI("AG");//get data command
+			System.out.println("Sent.");
+			String[] data = commMgr.readRPI().split(" ");
+			for (int i=0;i<6;i++) {
+				sensorData[i] = Integer.parseInt(data[i]);
+				System.out.printf("%2d,", sensorData[i]);
+			}		
+			System.out.println();
 
-		//for real run
-		setFrontRightDis((sensorData[0])/10);
-		setFrontStraDis((sensorData[1])/10);
-		setFrontLeftDis((sensorData[2])/10);
-		setLeftFrontDis((sensorData[3])/10);
-		setLeftBackDis((sensorData[4])/10);
-		setRightDis((sensorData[5])/10);
-	
-		//for simulation
-		/*
-		getLeftData();
-		getFrontData();
-		getRightData();
-		*/
+			//for real run
+			setFrontRightDis((sensorData[0])/10);
+			setFrontStraDis((sensorData[1])/10);
+			setFrontLeftDis((sensorData[2])/10);
+			setLeftFrontDis((sensorData[3])/10);
+			setLeftBackDis((sensorData[4])/10);
+			setRightDis((sensorData[5])/10);
+		}
+		else {
+			//for simulation
+			getLeftData();
+			getFrontData();
+			getRightData();
+		}
+		
 		return;
 	}
 	
+		
 	public void checkAction(String str) {
 		while (str.compareTo("ready")==0) {
 			return;
 		}
 	}
 	
-	public void moveForward(int dis, int dir) throws InterruptedException
-	{
-		commMgr.writeRPI("AW");
-		checkAction(commMgr.readRPI());
-		//Thread.sleep(3000);
+	
+	public void moveForward(int dis, int dir) throws InterruptedException {
+		if (commOn) {
+			commMgr.writeRPI("AW");
+			checkAction(commMgr.readRPI());	
+		}
+		
 		switch (dir)
 		{
 			case 0:
@@ -420,36 +457,41 @@ public class Robot extends BorderPane {
 		updatePosition(x, y);
 	}
 	
+
 	public void turnLeft() throws InterruptedException {
-		commMgr.writeRPI("AA");
-		checkAction(commMgr.readRPI());
-		//Thread.sleep(3000);
+		if (commOn) {
+			commMgr.writeRPI("AA");
+			checkAction(commMgr.readRPI());
+		}
 		setDirection((direction+270)%360);
-		;
+		
 	}
 	
+
 	public void turnRight() throws InterruptedException {
-		commMgr.writeRPI("AD");
-		checkAction(commMgr.readRPI());
-		//Thread.sleep(3000);
+		if (commOn) {
+			commMgr.writeRPI("AD");
+			checkAction(commMgr.readRPI());
+		}		
 		setDirection((direction+90)%360);
 	}
 	
+
 	public void updatePosition(int x, int y) {
 		setX(x);
 		setY(y);
 	}
 	
-	public boolean checkFront() throws InterruptedException
-	{
+
+	public boolean checkFront() throws InterruptedException {
 		getData();		
 		if ((frontLeftDis>0)&&(frontStraDis>0)&&(frontRightDis>0))
 			return true;
 		return false;
 	}
 
-	public boolean checkLeft() throws InterruptedException
-	{
+
+	public boolean checkLeft() throws InterruptedException {
 		getData();
 		if (leftFrontDis>0)
 		{

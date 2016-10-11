@@ -56,10 +56,10 @@ public class Main extends Application implements EventHandler<Event> {
 		    Scene scene = new Scene(root);
 
 		    BorderPane bp = new BorderPane();		    
-		    arena = new Arena(1);
+		    arena = new Arena();
 		    arena.resetMap();
 		    result = new Arena();
-		    explorer = new Explorer(1, 18, 0, result.grids, result.getRobot());
+		    explorer = new Explorer(1, 18, 0, result);
 		    
 		    bp.setLeft(arena);
 		    bp.setRight(result);
@@ -74,6 +74,10 @@ public class Main extends Application implements EventHandler<Event> {
 		    Button mExploration = new Button("Exploration");
 		    mExploration.setId("btn_exploration");
 		    mExploration.setOnMouseClicked(this);
+
+		    Button mExplorationSim = new Button("ExplorationSim");
+		    mExplorationSim.setId("btn_exploration_sim");
+		    mExplorationSim.setOnMouseClicked(this);
 
 		    Button mFastestPath = new Button("Fastest Path");
 		    mFastestPath.setId("btn_fastest_path");
@@ -117,7 +121,8 @@ public class Main extends Application implements EventHandler<Event> {
 		    mTakeSpeed.setOnMouseClicked(this);
 			
 		    
-			vbox.getChildren().addAll(mCoordinate, mExploration, mFastestPath, 
+			vbox.getChildren().addAll(
+					mCoordinate, mExploration, mExplorationSim, mFastestPath, 
 					mSaveMap, mLoadMap, mResetMap, 
 					hboxTimer, timeInput, mTakeTime, 
 					hboxCoverage, coverageInput, mTakeCover, 
@@ -187,7 +192,7 @@ public class Main extends Application implements EventHandler<Event> {
 					}
 					break;
 				case "btn_exploration":
-					//result.getRobot().setMap(arena.grids);
+					result.getRobot().setCommOn(true);
 					Thread th = new Thread(new Runnable() {						
 						@Override
 						public void run() {
@@ -203,6 +208,24 @@ public class Main extends Application implements EventHandler<Event> {
 					th.start();
 					
 					break;
+				case "btn_exploration_sim":
+					result.getRobot().setMap(arena.grids);
+					result.getRobot().setCommOn(false);
+					Thread th1 = new Thread(new Runnable() {						
+						@Override
+						public void run() {
+							try {
+								explorer.explore();
+							} catch (InterruptedException e) {
+								e.printStackTrace();
+							}
+						}
+					});
+					
+					th1.setDaemon(true);
+					th1.start();
+					
+					break;
 				case "btn_fastest_path":
 					try {
 						result.getRobot().setDirection(0);
@@ -214,6 +237,7 @@ public class Main extends Application implements EventHandler<Event> {
 					break;
 				case "btn_reset_map":
 					arena.resetMap();
+					result.resetMap(true);
 					break;
 				case "btn_take_time":
 					String timeStr = timeInput.getText();
