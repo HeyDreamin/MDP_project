@@ -56,7 +56,7 @@ public class Main extends Application implements EventHandler<Event> {
 		    Scene scene = new Scene(root);
 
 		    BorderPane bp = new BorderPane();		    
-		    arena = new Arena();
+		    arena = new Arena(1);
 		    arena.resetMap();
 		    result = new Arena();
 		    explorer = new Explorer(1, 18, 0, result.grids, result.getRobot());
@@ -187,7 +187,7 @@ public class Main extends Application implements EventHandler<Event> {
 					}
 					break;
 				case "btn_exploration":
-					result.getRobot().setMap(arena.grids);
+					//result.getRobot().setMap(arena.grids);
 					Thread th = new Thread(new Runnable() {						
 						@Override
 						public void run() {

@@ -6,7 +6,7 @@ import java.util.*;
 import communication.CommManager;
 
 public class Explorer {
-	private static final int SHORTRANGE = 3;
+	private static final int SHORTRANGE = 2;
 	private static final int LONGRANGE = 5;
 	private int currentDir;//0 90 180 270 360
 	private int x;
@@ -128,9 +128,8 @@ public class Explorer {
 	}
 	
 	private void moveForwardRobot(int dis, int dir) throws InterruptedException {
-		//add robot control things here
 		try {
-			Thread.sleep(timePerStep);
+			Thread.sleep(0);
 		} catch (InterruptedException e) {
 			e.printStackTrace();
 		}
@@ -150,11 +149,11 @@ public class Explorer {
 		double temp =  coverage / 2.82;
 		System.out.printf("Step No%3d  x:%2d  |  y:%2d  |  dir:%3d  | cover:%.2f%s\n",
 				steps, robot.getX(), robot.getY(), currentDir, temp, "%");
-		if (steps*timePerStep>=timeLimit) {
+		/*if (steps*timePerStep>=timeLimit) {
 			System.out.println("Time out. Terminate.");
 			return true;
 			
-		}
+		}*/
 		if ((coverage / 2.82) > coverageLimit) {
 			System.out.println("Coverage reached. Terminate.");
 			return true;
@@ -404,6 +403,8 @@ public class Explorer {
 		int i;
 		int rightDis = robot.getRightDis();
 		dir /= 90;
+		if ((rightDis < 4)||(rightDis > 5))
+			return;
 		switch (dir)
 		{
 			case 0:
@@ -503,19 +504,19 @@ public class Explorer {
 		currentDir = 0;
 		robot.setDirection(0);
 		robot.setVisible(true);
-		//robot.getCommMgr().writeRPI("Hello.");
 		
+		//robot.getCommMgr().writeRPI("AW");
 		robot.getData();
 		drawFront(0);
 		drawLeft(0);
 		drawRight(0);
-		System.out.printf("Time limit:%d \nCover Limit:%d \nSpeed:%d\n",getTimeLimit(),getCoverageLimit(),getTimePerStep());
+		System.out.printf("\nTime limit:%d \nCover Limit:%d \nSpeed:%d\n",getTimeLimit(),getCoverageLimit(),getTimePerStep());
 		while (!done) {
 			if (checkDone())
 				return;
 
 			if (needRight) {
-				robot.getFrontData();
+				robot.getData();
 				drawFront(robot.getDirection());				
 				needRight = false;
 			}
@@ -525,7 +526,7 @@ public class Explorer {
 				else {
 					if (checkRobotLeft()) {
 						steps++;					
-						robot.getFrontData();
+						robot.getData();
 						drawFront(robot.getDirection());
 						if (checkTimeCoverageLimit())
 							return;	
@@ -534,7 +535,7 @@ public class Explorer {
 					}
 					else {
 						steps++;
-						robot.getFrontData();
+						robot.getData();
 						drawFront(robot.getDirection());
 
 						if (checkTimeCoverageLimit())
@@ -546,14 +547,13 @@ public class Explorer {
 			currentDir = robot.getDirection();
 
 			while (robot.checkFront()) {
-				robot.getFrontData();
+				robot.getData();
 				drawFront(currentDir);
 				moveForwardRobot(1,currentDir);
 				if (checkDone())
 					return;
-				robot.getLeftData();
+				robot.getData();
 				drawLeft(currentDir);
-				robot.getRightData();
 				drawRight(currentDir);
 				steps++;
 				if (checkTimeCoverageLimit()) {
@@ -561,13 +561,13 @@ public class Explorer {
 					return;
 				}				
 				if (checkRobotLeft()) {
-					robot.getFrontData();
+					robot.getData();
 					drawFront(robot.getDirection());
 					needLeft = true;
 					break;
 				}
 				else {
-					robot.getFrontData();
+					robot.getData();
 					drawFront(robot.getDirection());
 				}
 			}

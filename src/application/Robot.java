@@ -62,14 +62,16 @@ public class Robot extends BorderPane {
 	    robot.setFitWidth(70);
 	    this.originMap = map;
 	    commMgr = new CommManager();
-	    //commMgr.writeRPI("AW");
-	    //commMgr.writeRPI("AA");
+	    commMgr.writeRPI("AT");
+	    System.out.println(commMgr.readRPI());
 	    
 	    sensorData = new int[6];
 	    
 	    setCenter(robot);
 	    setVisible(false);
 	}
+	
+	
 	
 	public CommManager getCommMgr() {
 		return commMgr;
@@ -353,24 +355,28 @@ public class Robot extends BorderPane {
 		setRightDis(dis);
 	}
 
-	public void getData()
+	public void getData() throws InterruptedException
 	{
 		System.out.println("ready to write."); 
 		commMgr.writeRPI("AG");//get data command
+		//Thread.sleep(500);
 		System.out.println("Sent.");
-		String[] data = commMgr.readRPI().split("");
+		String[] data = commMgr.readRPI().split(" ");
 		for (int i=0;i<6;i++) {
 			sensorData[i] = Integer.parseInt(data[i]);
-		}
-		
+			System.out.printf("%2d,", sensorData[i]);
+		}		
+		System.out.println();
 
-		setFrontRightDis(sensorData[0]);
-		setFrontStraDis(sensorData[1]);
-		setFrontLeftDis(sensorData[2]);
-		setLeftFrontDis(sensorData[3]);
-		setLeftBackDis(sensorData[4]);
-		setRightDis(sensorData[5]);
+		//for real run
+		setFrontRightDis((sensorData[0])/10);
+		setFrontStraDis((sensorData[1])/10);
+		setFrontLeftDis((sensorData[2])/10);
+		setLeftFrontDis((sensorData[3])/10);
+		setLeftBackDis((sensorData[4])/10);
+		setRightDis((sensorData[5])/10);
 	
+		//for simulation
 		/*
 		getLeftData();
 		getFrontData();
@@ -379,9 +385,17 @@ public class Robot extends BorderPane {
 		return;
 	}
 	
+	public void checkAction(String str) {
+		while (str.compareTo("ready")==0) {
+			return;
+		}
+	}
+	
 	public void moveForward(int dis, int dir) throws InterruptedException
 	{
 		commMgr.writeRPI("AW");
+		checkAction(commMgr.readRPI());
+		//Thread.sleep(3000);
 		switch (dir)
 		{
 			case 0:
@@ -404,17 +418,20 @@ public class Robot extends BorderPane {
 				break;
 		}
 		updatePosition(x, y);
-		Thread.sleep(100);
 	}
 	
 	public void turnLeft() throws InterruptedException {
 		commMgr.writeRPI("AA");
+		checkAction(commMgr.readRPI());
+		//Thread.sleep(3000);
 		setDirection((direction+270)%360);
 		;
 	}
 	
 	public void turnRight() throws InterruptedException {
 		commMgr.writeRPI("AD");
+		checkAction(commMgr.readRPI());
+		//Thread.sleep(3000);
 		setDirection((direction+90)%360);
 	}
 	
@@ -423,9 +440,9 @@ public class Robot extends BorderPane {
 		setY(y);
 	}
 	
-	public boolean checkFront()
+	public boolean checkFront() throws InterruptedException
 	{
-		getFrontData();		
+		getData();		
 		if ((frontLeftDis>0)&&(frontStraDis>0)&&(frontRightDis>0))
 			return true;
 		return false;
@@ -433,7 +450,7 @@ public class Robot extends BorderPane {
 
 	public boolean checkLeft() throws InterruptedException
 	{
-		getLeftData();
+		getData();
 		if (leftFrontDis>0)
 		{
 			turnLeft();
