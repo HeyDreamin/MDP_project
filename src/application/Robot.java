@@ -363,9 +363,9 @@ public class Robot extends BorderPane {
 
 	public void getData() throws InterruptedException {
 		if (commOn) {
-			System.out.println("ready to write."); 
+			//System.out.println("ready to write."); 
 			commMgr.writeRPI("AG");//get data command
-			System.out.println("Sent.");
+			//System.out.println("Sent.");
 			String[] data = commMgr.readRPI().split(",");
 			while (data.length<5) {
 				data = commMgr.readRPI().split(",");
@@ -476,7 +476,7 @@ public class Robot extends BorderPane {
 	}
 	
 	public String readRpi()	{
-		System.out.println("Hi got come in");
+		//System.out.println("Hi got come in");
 		String a1 = commMgr.readRPI();
 		System.out.println(a1);
 		return a1;

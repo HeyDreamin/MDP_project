@@ -586,14 +586,14 @@ public class Explorer {
 	}
 	
 	public void drawWall(Grid gridToDraw) {
-		if (!gridToDraw.isWall())	{
+		if (gridToDraw.isUnknown())	{
 			gridToDraw.setWall();
 			coverage++;
 		}
 	}
 	
 	public void drawFreeSpace(Grid gridToDraw) {
-		if (!gridToDraw.isFreeSpace())	{
+		if (gridToDraw.isUnknown())	{
 			gridToDraw.setFreeSpace();
 			coverage++;
 		}
@@ -614,8 +614,10 @@ public class Explorer {
 	private boolean checkRobotLeft() throws InterruptedException {
 		if ((robot.getLeftFrontDis()>0)&&
 			(robot.getLeftBackDis()>0)&&
-			(getLeftMidGrid().isFreeSpace()))
-			return true;		
+			(getLeftMidGrid().isFreeSpace())) {
+			System.out.println("Left clean.");
+			return true;
+		}					
 		return false;
 	}
 	
@@ -721,7 +723,7 @@ public class Explorer {
 				lastAction = 1;
 			}
 			
-			robot.getData();					
+			robot.getData();
 			drawFront(currentDir);
 			drawLeft(currentDir);
 			drawRight(currentDir);
@@ -730,8 +732,9 @@ public class Explorer {
 			array[2] = currentDir;
 			p1 = result.encodeMapDescriptor(1);
 			p2 = result.encodeMapDescriptor(2);	
-			System.out.println("p1:"+p1);
-			System.out.println("p2:"+p2);
+			System.out.println("x:"+array[0]);
+			System.out.println("y:"+array[1]);
+			System.out.println("Dir:"+array[2]);
 			try {
 				json.put("robotposition", array);
 				json.put("P1", p1);
