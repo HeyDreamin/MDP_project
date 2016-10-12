@@ -223,8 +223,11 @@ public class Explorer {
 						drawWall(grids[y - 2 - frontLeftDis][x - 1]);
 				}
 				else if (frontLeftDis>2) {
-					for (i = 0; i < 2; i++)
+					for (i = 0; i < 2; i++) {
+						if (y - 2 - i < 0)
+							break;
 						drawFreeSpace(grids[y - 2 - i][x - 1]);
+					}
 				}
 				if ((frontStraDis>=1)&&(frontStraDis<=2)) {
 					for (i = 0; i < frontStraDis; i++)
@@ -233,8 +236,11 @@ public class Explorer {
 						drawWall(grids[y - 2 - frontStraDis][x]);
 				}
 				else if (frontStraDis>2) {
-					for (i = 0; i < 2; i++)
+					for (i = 0; i < 2; i++) {
+						if (y - 2 - i < 0)
+							break;
 						drawFreeSpace(grids[y - 2 - i][x]);
+					}
 				}
 				if ((frontRightDis>=1)&&(frontRightDis<=2)) {
 					for (i = 0; i < frontRightDis; i++)
@@ -243,8 +249,11 @@ public class Explorer {
 						drawWall(grids[y - 2 - frontRightDis][x + 1]);
 				}
 				else if (frontRightDis>2) {
-					for (i = 0; i < 2; i++)
+					for (i = 0; i < 2; i++) {
+						if (y - 2 - i < 0)
+							break;
 						drawFreeSpace(grids[y - 2 - i][x + 1]);
+					}
 				}
 				break;
 				
@@ -256,8 +265,11 @@ public class Explorer {
 						drawWall(grids[y - 1][x + 2 + frontLeftDis]);
 				}
 				else if (frontLeftDis>2) {
-					for (i = 0; i < 2; i++) 
+					for (i = 0; i < 2; i++) {
+						if (x + 2 + i > 14)
+							break; 
 						drawFreeSpace(grids[y - 1][x + 2 + i]);
+					}
 				}
 				if ((frontStraDis>=1)&&(frontStraDis<=2)) {
 					for (i = 0; i < frontStraDis; i++)
@@ -266,8 +278,11 @@ public class Explorer {
 						drawWall(grids[y][x + 2 + frontStraDis]);
 				}
 				else if (frontStraDis>2) {
-					for (i = 0; i < 2; i++)
+					for (i = 0; i < 2; i++) {
+						if (x + 2 + i > 14)
+							break; 
 						drawFreeSpace(grids[y][x + 2 + i]);
+					}
 				}
 				if ((frontRightDis>=1)&&(frontRightDis<=2)) {
 					for (i = 0; i < frontRightDis; i++)
@@ -276,8 +291,11 @@ public class Explorer {
 						drawWall(grids[y + 1][x + 2 + frontRightDis]);
 				}
 				else if (frontRightDis>2) {
-					for (i = 0; i < 2; i++)
+					for (i = 0; i < 2; i++) {
+						if (x + 2 + i > 14)
+							break; 
 						drawFreeSpace(grids[y + 1][x + 2 + i]);
+					}
 				}
 				break;
 
@@ -289,8 +307,11 @@ public class Explorer {
 						drawWall(grids[y + 2 + frontLeftDis][x + 1]);
 				}
 				else if (frontLeftDis>2) {
-					for (i = 0; i < 2; i++)
+					for (i = 0; i < 2; i++) {
+						if (y + 2 + i > 19)
+							break; 
 						drawFreeSpace(grids[y + 2 + i][x + 1]);
+					}
 				}
 				if ((frontStraDis>=1)&&(frontStraDis<=2)) {
 					for (i = 0; i < frontStraDis; i++)
@@ -299,8 +320,11 @@ public class Explorer {
 						drawWall(grids[y + 2 + frontStraDis][x]);
 				}
 				else if (frontStraDis>2) {
-					for (i = 0; i < 2; i++)
+					for (i = 0; i < 2; i++) {
+						if (y + 2 + i > 19)
+							break; 
 						drawFreeSpace(grids[y + 2 + i][x]);
+					}
 				}
 				if ((frontRightDis>=1)&&(frontRightDis<=2)) {
 					for (i = 0; i < frontRightDis; i++)
@@ -309,8 +333,11 @@ public class Explorer {
 						drawWall(grids[y + 2 + frontRightDis][x - 1]);
 				}
 				else if (frontRightDis>2) {
-					for (i = 0; i < 2; i++)
+					for (i = 0; i < 2; i++) {
+						if (y + 2 + i > 19)
+							break; 
 						drawFreeSpace(grids[y + 2 + i][x - 1]);
+					}
 				}
 				break;
 
@@ -322,8 +349,11 @@ public class Explorer {
 						drawWall(grids[y + 1][x - 2 - frontLeftDis]);
 				}
 				else if (frontLeftDis>2) {
-					for (i = 0; i < 2; i++)
+					for (i = 0; i < 2; i++) {
+						if (y + 2 + i > 19)
+							break; 
 						drawFreeSpace(grids[y + 1][x - 2 - i]);
+					}
 				}
 				if ((frontStraDis>=1)&&(frontStraDis<=2)) {
 					for (i = 0; i < frontStraDis; i++)
@@ -332,8 +362,11 @@ public class Explorer {
 						drawWall(grids[y][x - 2 - frontStraDis]);
 				}
 				else if (frontStraDis>2) {
-					for (i = 0; i < 2; i++)
+					for (i = 0; i < 2; i++) {
+						if (y + 2 + i > 19)
+							break;
 						drawFreeSpace(grids[y][x - 2 - i]);
+					}
 				}
 				if ((frontRightDis>=1)&&(frontRightDis<=2)) {
 					for (i = 0; i < frontRightDis; i++)
@@ -342,8 +375,11 @@ public class Explorer {
 						drawWall(grids[y - 1][x - 2 - frontRightDis]);
 				}
 				else if (frontRightDis>2) {
-					for (i = 0; i < 2; i++)
+					for (i = 0; i < 2; i++) {
+						if (y + 2 + i > 19)
+							break; 
 						drawFreeSpace(grids[y - 1][x - 2 - i]);
+					}
 				}
 				break;
 		}	
@@ -359,7 +395,7 @@ public class Explorer {
 			case 0:
 				if (x > 1)
 				{
-					if ((1<=leftFrontDis)&&(leftFrontDis<=2)) {
+					if ((leftFrontDis<=2)) {
 						for (i = 0; i < leftFrontDis; i++)
 							drawFreeSpace(grids[y - 1][x - 2 - i]);
 						if ((x - 2 - leftFrontDis >= 0)&&(leftFrontDis < SHORTRANGE))
@@ -369,7 +405,7 @@ public class Explorer {
 						for (i = 0; i<2; i++)
 							drawFreeSpace(grids[y - 1][x - 2 - i]);
 					}
-					if ((1<=leftBackDis)&&(leftBackDis<=2)) {
+					if ((leftBackDis<=2)) {
 						for (i = 0; i < leftBackDis; i++)
 							drawFreeSpace(grids[y + 1][x - 2 - i]);
 						if ((x - 2 - leftBackDis >= 0)&&(leftBackDis < SHORTRANGE))
@@ -385,7 +421,7 @@ public class Explorer {
 			case 1:
 				if (y < 18)
 				{
-					if ((1<=leftFrontDis)&&(leftFrontDis<=2)) {
+					if ((leftFrontDis<=2)) {
 						for (i = 0; i < leftFrontDis; i++)
 							drawFreeSpace(grids[y - 2 - i][x + 1]);
 						if ((y - 2 - leftFrontDis >= 0)&&(leftFrontDis < SHORTRANGE))
@@ -396,7 +432,7 @@ public class Explorer {
 							drawFreeSpace(grids[y - 2 - i][x + 1]);
 					}
 					
-					if ((1<=leftBackDis)&&(leftBackDis<=2)) {
+					if ((leftBackDis<=2)) {
 						for (i = 0; i < leftBackDis; i++)
 							drawFreeSpace(grids[y - 2 - i][x - 1]);
 						if ((y - 2 - leftBackDis >= 0)&&(leftBackDis < SHORTRANGE))
@@ -412,7 +448,7 @@ public class Explorer {
 			case 2:
 				if (x < 13)
 				{
-					if ((1<=leftFrontDis)&&(leftFrontDis<=2)) {
+					if ((leftFrontDis<=2)) {
 						for (i = 0; i < leftFrontDis; i++)
 							drawFreeSpace(grids[y + 1][x + 2 + i]);
 						if ((x + 2 + leftFrontDis <= 14)&&(leftFrontDis < SHORTRANGE))
@@ -423,7 +459,7 @@ public class Explorer {
 							drawFreeSpace(grids[y + 1][x + 2 + i]);
 					}
 					
-					if ((1<=leftBackDis)&&(leftBackDis<=2)) {
+					if ((leftBackDis<=2)) {
 						for (i = 0; i < leftBackDis; i++)
 							drawFreeSpace(grids[y - 1][x + 2 + i]);
 						if ((x + 2 + leftBackDis <= 14)&&(leftBackDis < SHORTRANGE))
@@ -439,7 +475,7 @@ public class Explorer {
 			case 3:
 				if (y > 1)
 				{
-					if ((1<=leftFrontDis)&&(leftFrontDis<=2)) {
+					if ((leftFrontDis<=2)) {
 						for (i = 0; i < leftFrontDis; i++)
 							drawFreeSpace(grids[y + 2 + i][x - 1]);
 						if ((y + 2 + leftFrontDis <= 19)&&(leftFrontDis < SHORTRANGE))
@@ -450,7 +486,7 @@ public class Explorer {
 							drawFreeSpace(grids[y + 2 + i][x - 1]);
 					}
 					
-					if ((1<=leftBackDis)&&(leftBackDis<=2)) {
+					if ((leftBackDis<=2)) {
 						for (i = 0; i < leftBackDis; i++)
 							drawFreeSpace(grids[y + 2 + i][x + 1]);
 						if ((y + 2 + leftBackDis <= 19)&&(leftBackDis < SHORTRANGE))
@@ -478,8 +514,11 @@ public class Explorer {
 				if (x < 13)
 				{
 					if (rightDis>5) {
-						for (i = 0; i < 5; i++)
+						for (i = 0; i < 5; i++) {
+							if (x + 2 + i > 14)
+								break;
 							drawFreeSpace(grids[y][x + 2 + i]);
+						}
 						break;
 					}
 					for (i = 0; i < rightDis; i++)
@@ -493,8 +532,11 @@ public class Explorer {
 				if (y < 17)
 				{
 					if (rightDis>5) {
-						for (i = 0; i < 5; i++)
+						for (i = 0; i < 5; i++) {
+							if (y + 2 + i > 19)
+								break;
 							drawFreeSpace(grids[y + 2 + i][x]);
+						}
 						break;
 					}
 					for (i = 0; i < rightDis; i++)
@@ -508,8 +550,11 @@ public class Explorer {
 				if (x > 1)
 				{
 					if (rightDis>5) {
-						for (i = 0; i < 5; i++)
+						for (i = 0; i < 5; i++) {
+							if (x - 2 - i < 0)
+								break;
 							drawFreeSpace(grids[y][x - 2 - i]);
+						}
 						break;
 					}
 					for (i = 0; i < rightDis; i++)
@@ -523,8 +568,11 @@ public class Explorer {
 				if (y > 1)
 				{
 					if (rightDis>5) {
-						for (i = 0; i < 5; i++)
+						for (i = 0; i < 5; i++) {
+							if (y - 2 - i < 0)
+								break;
 							drawFreeSpace(grids[y - 2 - i][x]);
+						}
 						break;
 					}
 					for (i = 0; i < rightDis; i++)

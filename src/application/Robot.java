@@ -361,15 +361,14 @@ public class Robot extends BorderPane {
 		setRightDis(dis);
 	}
 
-	public void getData() throws InterruptedException
-	{
+	public void getData() throws InterruptedException {
 		if (commOn) {
 			System.out.println("ready to write."); 
 			commMgr.writeRPI("AG");//get data command
 			System.out.println("Sent.");
-			String[] data = commMgr.readRPI().split(" ");
+			String[] data = commMgr.readRPI().split(",");
 			while (data.length<5) {
-				data = commMgr.readRPI().split(" ");
+				data = commMgr.readRPI().split(",");
 			}
 			for (int i=0;i<6;i++) {
 				sensorData[i] = Integer.parseInt(data[i]);
