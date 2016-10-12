@@ -56,7 +56,7 @@ public class Main extends Application implements EventHandler<Event> {
 		    Scene scene = new Scene(root);
 
 		    BorderPane bp = new BorderPane();		    
-		    arena = new Arena();
+		    arena = new Arena(1);
 		    arena.resetMap();
 		    result = new Arena();
 		    explorer = new Explorer(1, 18, 0, result);

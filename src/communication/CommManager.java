@@ -23,7 +23,9 @@ public class CommManager {
 
 	public String readRPI() {
 		try	{
+			System.out.println("In comm mgr.");
 			String answer = input.readLine();
+			System.out.println("indata:"+answer);
 			return answer;
 		} catch (Exception e) {
 			return e.getMessage();

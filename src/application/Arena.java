@@ -17,12 +17,45 @@ public class Arena extends AnchorPane implements EventHandler<Event> {
 	private Robot robot;
 	private GridPane arena;
 	private boolean changeCoordinate;
+
+	public Arena(int i) {
+		super();
+
+		// initialize the robot icon
+		//robot = new Robot(1, 18, 0, grids, true);
 		
+		// 
+		changeCoordinate = false;
+		
+		// add the grid to the arena
+		arena = new GridPane();
+
+	    for (int row = 0; row < 20; row++) {
+	    	for (int col = 0; col < 15; col++) {
+			    Grid grid = new Grid(row, col);
+			    grid.setMinWidth(30);
+			    grid.setMinHeight(30);
+			    grid.setOnMouseEntered(this);
+			    grid.setOnMouseExited(this);
+			    grid.setOnMouseClicked(this);
+			    				    
+			    arena.add(grid, col, row);
+			    grids[row][col] = grid;
+		    }
+	    }
+	    
+	    arena.setGridLinesVisible(true);
+	    
+	    // add it into the arena
+	    getChildren().add(arena);
+	    //getChildren().add(robot);
+	}
+	
 	public Arena() {
 		super();
 
 		// initialize the robot icon
-		robot = new Robot(1,18,0,grids);
+		robot = new Robot(1, 18, 0, grids, true);
 		
 		// 
 		changeCoordinate = false;

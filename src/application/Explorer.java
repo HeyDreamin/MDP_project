@@ -3,9 +3,11 @@ import java.io.IOException;
 import java.text.SimpleDateFormat;
 import java.util.*;
 
+import org.json.JSONException;
+import org.json.JSONObject;
+
 import communication.CommManager;
 import jdk.nashorn.internal.ir.debug.JSONWriter;
-import net.sf.json.JSONObject;
 
 public class Explorer {
 	private static final int SHORTRANGE = 2;
@@ -214,86 +216,134 @@ public class Explorer {
 		switch (dir)
 		{
 			case 0:
-				if ((frontLeftDis>=1)||(frontLeftDis<=2)) {
+				if ((frontLeftDis>=1)&&(frontLeftDis<=2)) {
 					for (i = 0; i < frontLeftDis ; i++)
 						drawFreeSpace(grids[y - 2 - i][x - 1]);
 					if ((y - 2 - frontLeftDis >= 0)&&(frontLeftDis < SHORTRANGE))
 						drawWall(grids[y - 2 - frontLeftDis][x - 1]);
 				}
-				if ((frontStraDis>=1)||(frontStraDis>=2)) {
+				else if (frontLeftDis>2) {
+					for (i = 0; i < 2; i++)
+						drawFreeSpace(grids[y - 2 - i][x - 1]);
+				}
+				if ((frontStraDis>=1)&&(frontStraDis<=2)) {
 					for (i = 0; i < frontStraDis; i++)
 						drawFreeSpace(grids[y - 2 - i][x]);
 					if ((y - 2 - frontStraDis >= 0)&&(frontStraDis < SHORTRANGE))
 						drawWall(grids[y - 2 - frontStraDis][x]);
 				}
-				if ((frontRightDis>=1)||(frontRightDis<=2)) {
+				else if (frontStraDis>2) {
+					for (i = 0; i < 2; i++)
+						drawFreeSpace(grids[y - 2 - i][x]);
+				}
+				if ((frontRightDis>=1)&&(frontRightDis<=2)) {
 					for (i = 0; i < frontRightDis; i++)
 						drawFreeSpace(grids[y - 2 - i][x + 1]);
 					if ((y - 2 - frontRightDis >= 0)&&(frontRightDis < SHORTRANGE))
 						drawWall(grids[y - 2 - frontRightDis][x + 1]);
 				}
+				else if (frontRightDis>2) {
+					for (i = 0; i < 2; i++)
+						drawFreeSpace(grids[y - 2 - i][x + 1]);
+				}
 				break;
 				
 			case 1:
-				if ((frontLeftDis>=1)||(frontLeftDis<=2)) {
+				if ((frontLeftDis>=1)&&(frontLeftDis<=2)) {
 					for (i = 0; i < frontLeftDis; i++) 
 						drawFreeSpace(grids[y - 1][x + 2 + i]);
 					if ((x + 2 + frontLeftDis < 15)&&(frontLeftDis < SHORTRANGE))
 						drawWall(grids[y - 1][x + 2 + frontLeftDis]);
 				}
-				if ((frontStraDis>=1)||(frontStraDis>=2)) {
+				else if (frontLeftDis>2) {
+					for (i = 0; i < 2; i++) 
+						drawFreeSpace(grids[y - 1][x + 2 + i]);
+				}
+				if ((frontStraDis>=1)&&(frontStraDis<=2)) {
 					for (i = 0; i < frontStraDis; i++)
 						drawFreeSpace(grids[y][x + 2 + i]);
 					if ((x + 2 + frontStraDis < 15)&&(frontStraDis < SHORTRANGE))
 						drawWall(grids[y][x + 2 + frontStraDis]);
 				}
-				if ((frontRightDis>=1)||(frontRightDis<=2)) {
+				else if (frontStraDis>2) {
+					for (i = 0; i < 2; i++)
+						drawFreeSpace(grids[y][x + 2 + i]);
+				}
+				if ((frontRightDis>=1)&&(frontRightDis<=2)) {
 					for (i = 0; i < frontRightDis; i++)
 						drawFreeSpace(grids[y + 1][x + 2 + i]);
 					if ((x + 2 + frontRightDis < 15)&&(frontRightDis < SHORTRANGE))
 						drawWall(grids[y + 1][x + 2 + frontRightDis]);
 				}
+				else if (frontRightDis>2) {
+					for (i = 0; i < 2; i++)
+						drawFreeSpace(grids[y + 1][x + 2 + i]);
+				}
 				break;
 
 			case 2:
-				if ((frontLeftDis>=1)||(frontLeftDis<=2)) {
+				if ((frontLeftDis>=1)&&(frontLeftDis<=2)) {
 					for (i = 0; i < frontLeftDis; i++)
 						drawFreeSpace(grids[y + 2 + i][x + 1]);
 					if ((y + 2 + frontLeftDis <= 19)&&(frontLeftDis < SHORTRANGE))
 						drawWall(grids[y + 2 + frontLeftDis][x + 1]);
 				}
-				if ((frontStraDis>=1)||(frontStraDis>=2)) {
+				else if (frontLeftDis>2) {
+					for (i = 0; i < 2; i++)
+						drawFreeSpace(grids[y + 2 + i][x + 1]);
+				}
+				if ((frontStraDis>=1)&&(frontStraDis<=2)) {
 					for (i = 0; i < frontStraDis; i++)
 						drawFreeSpace(grids[y + 2 + i][x]);
 					if ((y + 2 + frontStraDis <= 19)&&(frontStraDis < SHORTRANGE))
 						drawWall(grids[y + 2 + frontStraDis][x]);
 				}
-				if ((frontRightDis>=1)||(frontRightDis<=2)) {
+				else if (frontStraDis>2) {
+					for (i = 0; i < 2; i++)
+						drawFreeSpace(grids[y + 2 + i][x]);
+				}
+				if ((frontRightDis>=1)&&(frontRightDis<=2)) {
 					for (i = 0; i < frontRightDis; i++)
 						drawFreeSpace(grids[y + 2 + i][x - 1]);
 					if ((y + 2 + frontRightDis <= 19)&&(frontRightDis < SHORTRANGE))
 						drawWall(grids[y + 2 + frontRightDis][x - 1]);
 				}
+				else if (frontRightDis>2) {
+					for (i = 0; i < 2; i++)
+						drawFreeSpace(grids[y + 2 + i][x - 1]);
+				}
 				break;
 
 			case 3:
-				if ((frontLeftDis>=1)||(frontLeftDis<=2)) {
+				if ((frontLeftDis>=1)&&(frontLeftDis<=2)) {
 					for (i = 0; i < frontLeftDis; i++)
 						drawFreeSpace(grids[y + 1][x - 2 - i]);
 					if ((x - 2 - frontLeftDis >= 0)&&(frontLeftDis < SHORTRANGE))
 						drawWall(grids[y + 1][x - 2 - frontLeftDis]);
 				}
-				if ((frontStraDis>=1)||(frontStraDis>=2)) {
+				else if (frontLeftDis>2) {
+					for (i = 0; i < 2; i++)
+						drawFreeSpace(grids[y + 1][x - 2 - i]);
+				}
+				if ((frontStraDis>=1)&&(frontStraDis<=2)) {
 					for (i = 0; i < frontStraDis; i++)
 						drawFreeSpace(grids[y][x - 2 - i]);
 					if ((x - 2 - frontStraDis >= 0)&&(frontStraDis < SHORTRANGE))
 						drawWall(grids[y][x - 2 - frontStraDis]);
 				}
-				if ((frontRightDis>=1)||(frontRightDis<=2)) {
+				else if (frontStraDis>2) {
+					for (i = 0; i < 2; i++)
+						drawFreeSpace(grids[y][x - 2 - i]);
+				}
+				if ((frontRightDis>=1)&&(frontRightDis<=2)) {
 					for (i = 0; i < frontRightDis; i++)
 						drawFreeSpace(grids[y - 1][x - 2 - i]);
 					if ((x - 2 - frontRightDis >= 0)&&(frontRightDis < SHORTRANGE))
 						drawWall(grids[y - 1][x - 2 - frontRightDis]);
+				}
+				else if (frontRightDis>2) {
+					for (i = 0; i < 2; i++)
+						drawFreeSpace(grids[y - 1][x - 2 - i]);
 				}
 				break;
 		}	
@@ -309,17 +359,25 @@ public class Explorer {
 			case 0:
 				if (x > 1)
 				{
-					if ((1<=leftFrontDis)||(leftFrontDis<=2)) {
+					if ((1<=leftFrontDis)&&(leftFrontDis<=2)) {
 						for (i = 0; i < leftFrontDis; i++)
 							drawFreeSpace(grids[y - 1][x - 2 - i]);
 						if ((x - 2 - leftFrontDis >= 0)&&(leftFrontDis < SHORTRANGE))
 							drawWall(grids[y - 1][x - 2 - leftFrontDis]);
 					}
-					if ((1<=leftBackDis)||(leftBackDis<=2)) {
+					else if (leftFrontDis>2) {
+						for (i = 0; i<2; i++)
+							drawFreeSpace(grids[y - 1][x - 2 - i]);
+					}
+					if ((1<=leftBackDis)&&(leftBackDis<=2)) {
 						for (i = 0; i < leftBackDis; i++)
 							drawFreeSpace(grids[y + 1][x - 2 - i]);
 						if ((x - 2 - leftBackDis >= 0)&&(leftBackDis < SHORTRANGE))
 							drawWall(grids[y + 1][x - 2 - leftBackDis]);
+					}
+					else if (leftBackDis>2) {
+						for (i = 0; i < 2; i++)
+							drawFreeSpace(grids[y + 1][x - 2 - i]);
 					}
 				}
 				break;
@@ -327,18 +385,26 @@ public class Explorer {
 			case 1:
 				if (y < 18)
 				{
-					if ((1<=leftFrontDis)||(leftFrontDis<=2)) {
+					if ((1<=leftFrontDis)&&(leftFrontDis<=2)) {
 						for (i = 0; i < leftFrontDis; i++)
 							drawFreeSpace(grids[y - 2 - i][x + 1]);
 						if ((y - 2 - leftFrontDis >= 0)&&(leftFrontDis < SHORTRANGE))
 							drawWall(grids[y - 2 - leftFrontDis][x + 1]);
 					}
+					else if (leftFrontDis>2) {
+						for (i = 0; i < 2; i++)
+							drawFreeSpace(grids[y - 2 - i][x + 1]);
+					}
 					
-					if ((1<=leftBackDis)||(leftBackDis<=2)) {
+					if ((1<=leftBackDis)&&(leftBackDis<=2)) {
 						for (i = 0; i < leftBackDis; i++)
 							drawFreeSpace(grids[y - 2 - i][x - 1]);
 						if ((y - 2 - leftBackDis >= 0)&&(leftBackDis < SHORTRANGE))
 							drawWall(grids[y - 2 - leftBackDis][x - 1]);
+					}
+					else if (leftBackDis>2) {
+						for (i = 0; i < 2; i++)
+							drawFreeSpace(grids[y - 2 - i][x - 1]);
 					}
 				}
 				break;
@@ -346,18 +412,26 @@ public class Explorer {
 			case 2:
 				if (x < 13)
 				{
-					if ((1<=leftFrontDis)||(leftFrontDis<=2)) {
+					if ((1<=leftFrontDis)&&(leftFrontDis<=2)) {
 						for (i = 0; i < leftFrontDis; i++)
 							drawFreeSpace(grids[y + 1][x + 2 + i]);
 						if ((x + 2 + leftFrontDis <= 14)&&(leftFrontDis < SHORTRANGE))
 							drawWall(grids[y + 1][x + 2 + leftFrontDis]);
 					}
+					else if (leftFrontDis>2) {
+						for (i = 0; i < 2; i++)
+							drawFreeSpace(grids[y + 1][x + 2 + i]);
+					}
 					
-					if ((1<=leftBackDis)||(leftBackDis<=2)) {
+					if ((1<=leftBackDis)&&(leftBackDis<=2)) {
 						for (i = 0; i < leftBackDis; i++)
 							drawFreeSpace(grids[y - 1][x + 2 + i]);
 						if ((x + 2 + leftBackDis <= 14)&&(leftBackDis < SHORTRANGE))
 							drawWall(grids[y - 1][x + 2 + leftBackDis]);
+					}
+					else if (leftBackDis>2) {
+						for (i = 0; i < 2; i++)
+							drawFreeSpace(grids[y - 1][x + 2 + i]);
 					}
 				}
 				break;
@@ -365,18 +439,26 @@ public class Explorer {
 			case 3:
 				if (y > 1)
 				{
-					if ((1<=leftFrontDis)||(leftFrontDis<=2)) {
+					if ((1<=leftFrontDis)&&(leftFrontDis<=2)) {
 						for (i = 0; i < leftFrontDis; i++)
 							drawFreeSpace(grids[y + 2 + i][x - 1]);
 						if ((y + 2 + leftFrontDis <= 19)&&(leftFrontDis < SHORTRANGE))
 							drawWall(grids[y + 2 + leftFrontDis][x - 1]);
 					}
+					else if (leftFrontDis>2) {
+						for (i = 0; i < 2; i++)
+							drawFreeSpace(grids[y + 2 + i][x - 1]);
+					}
 					
-					if ((1<=leftBackDis)||(leftBackDis<=2)) {
+					if ((1<=leftBackDis)&&(leftBackDis<=2)) {
 						for (i = 0; i < leftBackDis; i++)
 							drawFreeSpace(grids[y + 2 + i][x + 1]);
 						if ((y + 2 + leftBackDis <= 19)&&(leftBackDis < SHORTRANGE))
 							drawWall(grids[y + 2 + leftBackDis][x + 1]);
+					}
+					else if (leftBackDis>2) {
+						for (i = 0; i < 2; i++)
+							drawFreeSpace(grids[y + 2 + i][x + 1]);
 					}
 				}
 				break;
@@ -388,17 +470,20 @@ public class Explorer {
 		int i;
 		int rightDis = robot.getRightDis();
 		dir /= 90;
-		if ((rightDis < 4)||(rightDis > 5))
+		if (rightDis < 4)
 			return;
 		switch (dir)
 		{
 			case 0:
 				if (x < 13)
 				{
-					for (i = 0; i < rightDis; i++)
-					{
-						drawFreeSpace(grids[y][x + 2 + i]);
+					if (rightDis>5) {
+						for (i = 0; i < 5; i++)
+							drawFreeSpace(grids[y][x + 2 + i]);
+						break;
 					}
+					for (i = 0; i < rightDis; i++)
+						drawFreeSpace(grids[y][x + 2 + i]);
 					if ((x + 2 + rightDis <= 14)&&(rightDis < LONGRANGE))
 						drawWall(grids[y][x + 2 + rightDis]);
 				}
@@ -407,10 +492,13 @@ public class Explorer {
 			case 1:
 				if (y < 17)
 				{
-					for (i = 0; i < rightDis; i++)
-					{
-						drawFreeSpace(grids[y + 2 + i][x]);
+					if (rightDis>5) {
+						for (i = 0; i < 5; i++)
+							drawFreeSpace(grids[y + 2 + i][x]);
+						break;
 					}
+					for (i = 0; i < rightDis; i++)
+						drawFreeSpace(grids[y + 2 + i][x]);
 					if ((y + 2 + rightDis <= 19)&&(rightDis < LONGRANGE))
 						drawWall(grids[y + 2 + rightDis][x]);
 				}
@@ -419,10 +507,13 @@ public class Explorer {
 			case 2:
 				if (x > 1)
 				{
-					for (i = 0; i < rightDis; i++)
-					{
-						drawFreeSpace(grids[y][x - 2 - i]);
+					if (rightDis>5) {
+						for (i = 0; i < 5; i++)
+							drawFreeSpace(grids[y][x - 2 - i]);
+						break;
 					}
+					for (i = 0; i < rightDis; i++)
+						drawFreeSpace(grids[y][x - 2 - i]);
 					if ((x - 2 - rightDis >= 0)&&(rightDis < LONGRANGE))
 						drawWall(grids[y][x - 2 - rightDis]);
 				}
@@ -431,10 +522,13 @@ public class Explorer {
 			case 3:
 				if (y > 1)
 				{
-					for (i = 0; i < rightDis; i++)
-					{
-						drawFreeSpace(grids[y - 2 - i][x]);
+					if (rightDis>5) {
+						for (i = 0; i < 5; i++)
+							drawFreeSpace(grids[y - 2 - i][x]);
+						break;
 					}
+					for (i = 0; i < rightDis; i++)
+						drawFreeSpace(grids[y - 2 - i][x]);
 					if ((y - 2 - rightDis >= 0)&&(rightDis < LONGRANGE))
 						drawWall(grids[y - 2 - rightDis][x]);
 				}
@@ -497,7 +591,7 @@ public class Explorer {
 			return true;			
 		return false;
 	}
-	
+		
 	private boolean checkRobotRight() {
 		return true;
 	}
@@ -508,9 +602,15 @@ public class Explorer {
 	
  	public void explore() throws InterruptedException {
  		exploredRoutes.clear();
+		String str = "";
 		
- 		while (!robot.getCommMgr().readRPI().equals("beginExplore")) {}
- 		
+		System.out.println("Before while");
+		while (str.compareTo("beginExplore")!=0) {
+			str = robot.readRpi();
+			System.out.println("received.");
+			System.out.println(str);
+		}
+ 		System.out.println("Command from tablet");
  		//System.out.printf("x:%2d  |  y:%2d  |  dir:%3d\n", robot.getX(), robot.getY(), currentDir);
 		
 		currentDir = 0;
@@ -518,13 +618,27 @@ public class Explorer {
 		robot.setDirection(0);
 		robot.setVisible(true);
 		
+
+		JSONObject json = new JSONObject();
+		int[] array = new int[3];
+		String p1 = null, p2 = null;
+		
 		//communicate once here
 		robot.getData();
 		
 		drawFront(0);
 		drawLeft(0);
 		drawRight(0);
-		
+		p1 = result.encodeMapDescriptor(1);
+		p2 = result.encodeMapDescriptor(2);
+		try {
+			json.put("robotposition", array);
+			json.put("P1", p1);
+			json.put("P2", p2);
+		} catch (JSONException e) {
+			e.printStackTrace();
+		}
+		robot.getCommMgr().writeRPI("T" + json.toString());
 		
 		System.out.printf("\n------------------"
 						+ "\nTime limit:%d"
@@ -533,10 +647,6 @@ public class Explorer {
 						+ "\n------------------"
 						+ "\n",
 				getTimeLimit(), getCoverageLimit(), getTimePerStep());
-		
-		JSONObject json = new JSONObject();
-		int[] array = new int[3];
-		String p1 = null, p2 = null;
 		
 		while (!done) {
 			if (checkRobotLeft()&&(lastAction!=-1)) {
@@ -571,11 +681,17 @@ public class Explorer {
 			array[1] = y;
 			array[2] = currentDir;
 			p1 = result.encodeMapDescriptor(1);
-			p2 = result.encodeMapDescriptor(2);			
-			json.put("robotposition", array);
-			json.put("P1", p1);
-			json.put("P2", p2);
-			robot.getCommMgr().writeRPI(json.toString());
+			p2 = result.encodeMapDescriptor(2);	
+			System.out.println("p1:"+p1);
+			System.out.println("p2:"+p2);
+			try {
+				json.put("robotposition", array);
+				json.put("P1", p1);
+				json.put("P2", p2);
+			} catch (JSONException e) {
+				e.printStackTrace();
+			}
+			robot.getCommMgr().writeRPI("T" + json.toString());
 		}
 		
 		outputMapDescription();
