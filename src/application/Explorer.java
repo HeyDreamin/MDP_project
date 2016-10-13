@@ -522,7 +522,8 @@ public class Explorer {
 						break;
 					}*/
 					for (i = 0; i < rightDis; i++)
-						drawFreeSpace(grids[y][x + 2 + i]);
+						if (x + 2 + i <= 14)	
+							drawFreeSpace(grids[y][x + 2 + i]);
 					if ((x + 2 + rightDis <= 14)&&(rightDis < LONGRANGE))
 						drawWall(grids[y][x + 2 + rightDis]);
 				}
@@ -540,7 +541,8 @@ public class Explorer {
 						break;
 					}*/
 					for (i = 0; i < rightDis; i++)
-						drawFreeSpace(grids[y + 2 + i][x]);
+						if (y + 2 + i <= 19)
+							drawFreeSpace(grids[y + 2 + i][x]);
 					if ((y + 2 + rightDis <= 19)&&(rightDis < LONGRANGE))
 						drawWall(grids[y + 2 + rightDis][x]);
 				}
@@ -558,7 +560,8 @@ public class Explorer {
 						break;
 					}*/
 					for (i = 0; i < rightDis; i++)
-						drawFreeSpace(grids[y][x - 2 - i]);
+						if (x - 2 - i >= 0)
+							drawFreeSpace(grids[y][x - 2 - i]);
 					if ((x - 2 - rightDis >= 0)&&(rightDis < LONGRANGE))
 						drawWall(grids[y][x - 2 - rightDis]);
 				}
@@ -576,7 +579,8 @@ public class Explorer {
 						break;
 					}*/
 					for (i = 0; i < rightDis; i++)
-						drawFreeSpace(grids[y - 2 - i][x]);
+						if (y - 2 - i >= 0)
+							drawFreeSpace(grids[y - 2 - i][x]);
 					if ((y - 2 - rightDis >= 0)&&(rightDis < LONGRANGE))
 						drawWall(grids[y - 2 - rightDis][x]);
 				}
