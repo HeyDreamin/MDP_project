@@ -399,6 +399,7 @@ public class Robot extends BorderPane {
 		while (str.compareTo("ready")!=0) {
 			str = commMgr.readRPI();
 		}
+		System.out.printf("Ready.\n");
 		return;
 	}
 	

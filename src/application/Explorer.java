@@ -506,21 +506,21 @@ public class Explorer {
 		int i;
 		int rightDis = robot.getRightDis();
 		dir /= 90;
-		if (rightDis < 4)
+		if ((rightDis < 4)||(rightDis>6))
 			return;
 		switch (dir)
 		{
 			case 0:
 				if (x < 13)
 				{
-					if (rightDis>5) {
+					/*if (rightDis>5) {
 						for (i = 0; i < 5; i++) {
 							if (x + 2 + i > 14)
 								break;
 							drawFreeSpace(grids[y][x + 2 + i]);
 						}
 						break;
-					}
+					}*/
 					for (i = 0; i < rightDis; i++)
 						drawFreeSpace(grids[y][x + 2 + i]);
 					if ((x + 2 + rightDis <= 14)&&(rightDis < LONGRANGE))
@@ -531,14 +531,14 @@ public class Explorer {
 			case 1:
 				if (y < 17)
 				{
-					if (rightDis>5) {
+					/*if (rightDis>5) {
 						for (i = 0; i < 5; i++) {
 							if (y + 2 + i > 19)
 								break;
 							drawFreeSpace(grids[y + 2 + i][x]);
 						}
 						break;
-					}
+					}*/
 					for (i = 0; i < rightDis; i++)
 						drawFreeSpace(grids[y + 2 + i][x]);
 					if ((y + 2 + rightDis <= 19)&&(rightDis < LONGRANGE))
@@ -549,14 +549,14 @@ public class Explorer {
 			case 2:
 				if (x > 1)
 				{
-					if (rightDis>5) {
+					/*if (rightDis>5) {
 						for (i = 0; i < 5; i++) {
 							if (x - 2 - i < 0)
 								break;
 							drawFreeSpace(grids[y][x - 2 - i]);
 						}
 						break;
-					}
+					}*/
 					for (i = 0; i < rightDis; i++)
 						drawFreeSpace(grids[y][x - 2 - i]);
 					if ((x - 2 - rightDis >= 0)&&(rightDis < LONGRANGE))
@@ -567,14 +567,14 @@ public class Explorer {
 			case 3:
 				if (y > 1)
 				{
-					if (rightDis>5) {
+					/*if (rightDis>5) {
 						for (i = 0; i < 5; i++) {
 							if (y - 2 - i < 0)
 								break;
 							drawFreeSpace(grids[y - 2 - i][x]);
 						}
 						break;
-					}
+					}*/
 					for (i = 0; i < rightDis; i++)
 						drawFreeSpace(grids[y - 2 - i][x]);
 					if ((y - 2 - rightDis >= 0)&&(rightDis < LONGRANGE))
@@ -586,14 +586,14 @@ public class Explorer {
 	}
 	
 	public void drawWall(Grid gridToDraw) {
-		if (gridToDraw.isUnknown())	{
+		if (!gridToDraw.isWall())	{
 			gridToDraw.setWall();
 			coverage++;
 		}
 	}
 	
 	public void drawFreeSpace(Grid gridToDraw) {
-		if (gridToDraw.isUnknown())	{
+		if (!gridToDraw.isFreeSpace())	{
 			gridToDraw.setFreeSpace();
 			coverage++;
 		}
@@ -614,25 +614,35 @@ public class Explorer {
 	private boolean checkRobotLeft() throws InterruptedException {
 		if ((robot.getLeftFrontDis()>0)&&
 			(robot.getLeftBackDis()>0)&&
-			(getLeftMidGrid().isFreeSpace())) {
+			checkLeftMidGrid()) {
 			System.out.println("Left clean.");
+			
+			
 			return true;
 		}					
 		return false;
 	}
 	
-	private Grid getLeftMidGrid() {
+	private boolean checkLeftMidGrid() {
 		switch (currentDir) {
 			case 0:
-				return grids[y][x - 2];
+				if (x - 2 < 0)
+					return false;
+				return grids[y][x - 2].isFreeSpace();
 			case 90:
-				return grids[y - 2][x];
+				if (y - 2 < 0)
+					return false;
+				return grids[y - 2][x].isFreeSpace();
 			case 180:
-				return grids[y][x + 2];
+				if (x + 2 > 19)
+					return false;
+				return grids[y][x + 2].isFreeSpace();
 			case 270:
-				return grids[y + 2][x];
+				if (y + 2 > 14)
+					return false;
+				return grids[y + 2][x].isFreeSpace();
 			default:
-				return null;
+				return false;
 		}
 	}
 	
@@ -699,7 +709,7 @@ public class Explorer {
 				getTimeLimit(), getCoverageLimit(), getTimePerStep());
 		
 		while (!done) {
-			if (checkRobotLeft()&&(lastAction!=-1)) {
+			if (checkRobotLeft()&&(lastAction==0)) {
 				robot.turnLeft();
 				currentDir = robot.getDirection();
 				steps++;
@@ -722,7 +732,8 @@ public class Explorer {
 					break;
 				lastAction = 1;
 			}
-			
+
+			System.out.println("----------------");
 			robot.getData();
 			drawFront(currentDir);
 			drawLeft(currentDir);

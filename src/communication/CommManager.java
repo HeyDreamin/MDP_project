@@ -11,6 +11,7 @@ public class CommManager {
 	private Socket s;
 	private BufferedReader input;
 	private PrintWriter out;
+	
 	public CommManager() {
 		try	{
 			s = new Socket(host,port);
@@ -23,9 +24,9 @@ public class CommManager {
 
 	public String readRPI() {
 		try	{
-			System.out.println("In comm mgr.");
+			//System.out.println("In comm mgr.");
 			String answer = input.readLine();
-			System.out.println("indata:"+answer);
+			//System.out.println("indata:"+answer);
 			return answer;
 		} catch (Exception e) {
 			return e.getMessage();
@@ -33,8 +34,9 @@ public class CommManager {
 	}
 	
 	public boolean writeRPI(String outData) {
-		try	{	         
-			System.out.println("outdata:"+outData);
+		try	{
+			if (!outData.contains("{"))
+				System.out.println("outdata:"+outData);
 			out.println(outData);
 	        return true;
 		} catch (Exception e) {
