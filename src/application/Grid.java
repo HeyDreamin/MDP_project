@@ -69,6 +69,14 @@ public class Grid extends Label {
 		setBackground(BG_UNKNOWN);
 	}
 
+	public boolean isStart() {
+		return status==Status.START;
+	}
+	
+	public boolean isGoal() {
+		return status==Status.GOAL;
+	}
+	
 	public boolean isFreeSpace() {
 		return status==Status.FREE_SPACE||status==Status.START||status==Status.GOAL;
 	}
